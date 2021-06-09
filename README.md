@@ -37,8 +37,11 @@ A standard interface allows any tokens on Free TON blockchain to be re-used by o
 Interface to implement a contract to receive notification from a Wallet on successfull operation:
 
 `amount` - Amount of tokens received;
+
 `senderOwnerAddress` - Sender Wallet owner address to calculate Wallet address (may be zero when Root performs mint operation);
+
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
@@ -108,9 +111,13 @@ Sends Tokens to another Wallet;
 ACCESS: only Wallet owner;
 
 `amount` - Amount of tokens to send;
+
 `targetOwnerAddress` - Receiver Wallet owner address to calculate Wallet address;
+
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
+
 `notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
@@ -123,9 +130,13 @@ function transfer(uint128 amount, address targetOwnerAddress, address initiatorA
 Receives Tokens from another Wallet or Root (minting);
 
 `amount` - Amount of tokens to receive;
+
 `senderOwnerAddress` - Sender Wallet owner address to calculate Wallet address (may be zero when Root performs mint operation);
+
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
+
 `notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
@@ -175,7 +186,9 @@ event tokensSent(uint128 amount, address targetOwnerAddress, TvmCell body);
 Event on Token received;
 
 `amount` - Amount of tokens sent;
+
 `senderOwnerAddress` - Sender Wallet owner address;
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
@@ -239,7 +252,9 @@ function callWalletAddress(address ownerAddress) external view responsible retur
 Receives burn command from Wallet;
 
 `amount` - Amount of tokens to burn;
+
 `senderOwnerAddress` - Sender Wallet owner address to calculate and verify Wallet address;
+
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
 ``` js
@@ -252,8 +267,11 @@ function burn(uint128 amount, address senderOwnerAddress, address initiatorAddre
 Mints tokens from Root to a target Wallet;
 
 `amount` - Amount of tokens to mint;
+
 `targetOwnerAddress` - Receiver Wallet owner address to calculate Wallet address;
+
 `notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
@@ -279,6 +297,7 @@ function createWallet(address ownerAddress) external;
 Event on Token burn;
 
 `amount` - Amount of tokens minted;
+
 `senderOwnerAddress` - Wallet owner address (mint receiver);
 
 ``` js
@@ -291,6 +310,7 @@ event tokensMinted(uint128 amount, address targetOwnerAddress);
 Event on Wallet creation;
 
 `ownerAddress` - Wallet owner;
+
 `walletAddress` - Wallet address;
 
 ``` js
@@ -303,6 +323,7 @@ event walletCreated(address ownerAddress, address walletAddress);
 Event on Token burn;
 
 `amount` - Amount of tokens burned;
+
 `senderOwnerAddress` - Wallet owner address (burn initiator);
 
 ``` js
