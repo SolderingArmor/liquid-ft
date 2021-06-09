@@ -173,7 +173,9 @@ event tokensBurned(uint128 amount);
 Event on Token sent;
 
 `amount` - Amount of tokens sent;
+
 `targetOwnerAddress` - Receiver Wallet owner address;
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
