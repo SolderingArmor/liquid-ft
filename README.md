@@ -116,7 +116,7 @@ ACCESS: only Wallet owner;
 
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
-`notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
 
 `body` - Custom body (business-logic specific, may be empty);
 
@@ -135,7 +135,7 @@ Receives Tokens from another Wallet or Root (minting);
 
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
-`notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` `contract address to receive a notification about minting (may be zero);
 
 `body` - Custom body (business-logic specific, may be empty);
 
@@ -145,11 +145,11 @@ function receiveTransfer(uint128 amount, address senderOwnerAddress, address ini
 
 #### changeNotifyOnReceiveAddress
 
-hanges contract address to receive a notification when "receiveTransfer" is performed;
+hanges contract address to receive a notification when `receiveTransfer` is performed;
 
 ACCESS: only Wallet owner;
 
-`newNotifyOnReceiveAddress` - "iFTNotify" contract address to receive a notification (when zero no one is notified);
+`newNotifyOnReceiveAddress` - `iFTNotify` contract address to receive a notification (when zero no one is notified);
 
 ``` js
 function changeNotifyOnReceiveAddress(address newNotifyOnReceiveAddress) external;
@@ -221,7 +221,7 @@ function callWalletCode() external view responsible returns (TvmCell);
 
 Returns the Root information + binary icon using the following structure:
 
-Icon is a utf8-string with encoded PNG image. The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64. Example: "data:image/png;base64,iVBORw0KG...5CYII=";
+Icon is a utf8-string with encoded PNG image. The string format is `"data:image/png;base64,<image>"`, where image - image bytes encoded in base64. Example: `"data:image/png;base64,iVBORw0KG...5CYII="`;
 
 ``` js
 struct TokenInfo
@@ -274,7 +274,7 @@ Mints tokens from Root to a target Wallet;
 
 `targetOwnerAddress` - Receiver Wallet owner address to calculate Wallet address;
 
-`notifyAddress` - "iFTNotify" contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
 
 `body` - Custom body (business-logic specific, may be empty);
 
