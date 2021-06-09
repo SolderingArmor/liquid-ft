@@ -36,6 +36,11 @@ A standard interface allows any tokens on Free TON blockchain to be re-used by o
 
 Interface to implement a contract to receive notification from a Wallet on successfull operation:
 
+`amount` - Amount of tokens received;
+`senderOwnerAddress` - Sender Wallet owner address to calculate Wallet address (may be zero when Root performs mint operation);
+`initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
+`body` - Custom body (business-logic specific, may be empty);
+
 ``` js
 interface iFTNotify
 {
