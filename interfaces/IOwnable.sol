@@ -12,13 +12,17 @@ import "../interfaces/IBase.sol";
 abstract contract IOwnable is IBase
 {
     //========================================
+    // Error codes
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER = 100;
+    
+    //========================================
     // Variables
     address _ownerAddress; //
 
     //========================================
     // Modifiers
     function senderIsOwner() internal view inline returns (bool) { return (msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
-    modifier onlyOwner {    require(senderIsOwner(), 100);    _;    }
+    modifier onlyOwner {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
 
     //========================================
     // Getters

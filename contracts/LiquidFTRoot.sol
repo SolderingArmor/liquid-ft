@@ -14,6 +14,10 @@ import "../contracts/LiquidFTWallet.sol";
 contract LiquidFTRoot is IOwnable, ILiquidFTRoot
 {
     //========================================
+    // Error codes
+    uint constant ERROR_WALLET_ADDRESS_INVALID = 301;
+
+    //========================================
     // Variables
     TvmCell   static _walletCode; //
     TokenInfo static _rootInfo;   //
@@ -72,7 +76,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     function burn(uint128 amount, address senderOwnerAddress, address initiatorAddress) external override reserve
     {
         (address walletAddress, ) = _getWalletInit(senderOwnerAddress);
-        require(walletAddress == msg.sender, 9999);
+        require(walletAddress == msg.sender, ERROR_WALLET_ADDRESS_INVALID);
 
         _rootInfo.balance -= amount;
 

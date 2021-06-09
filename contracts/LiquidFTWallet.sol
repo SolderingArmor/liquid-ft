@@ -13,7 +13,12 @@ import "../interfaces/ILiquidFTWallet.sol";
 contract LiquidFTWallet is IBase, ILiquidFTWallet
 {
     //========================================
-    // Constants
+    // Error codes
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER      = 100;
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT       = 101;
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_OWNER_OR_ROOT = 102;
+    uint constant ERROR_NOT_ENOUGH_BALANCE                  = 201;
+    uint constant ERROR_CAN_NOT_TRANSFER_TO_YOURSELF        = 202;
 
     //========================================
     // Variables
@@ -26,8 +31,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     // Modifiers
     function senderIsOwner() internal view inline returns (bool) { return (msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
     function senderIsRoot()  internal view inline returns (bool) { return (msg.sender.isStdAddrWithoutAnyCast() && _rootAddress  == msg.sender && _rootAddress  != addressZero);    }
-    modifier onlyOwner {    require(senderIsOwner(), 100);    _;    }
-    modifier onlyRoot  {    require(senderIsRoot(),  100);    _;    }
+    modifier onlyOwner {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
+    modifier onlyRoot  {    require(senderIsRoot(),  ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT);     _;    }
 
     //========================================
     // Getters
@@ -68,7 +73,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     function burn(uint128 amount) public override onlyOwner reserve
     {
-        require(_walletInfo.balance >= amount, 9999);
+        require(_walletInfo.balance >= amount, ERROR_NOT_ENOUGH_BALANCE);
         _walletInfo.balance -= amount;
 
         // Event
@@ -82,8 +87,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override onlyOwner reserve
     {
-        require(_walletInfo.balance >= amount,       9999);
-        require(targetOwnerAddress != _ownerAddress, 9999);
+        require(_walletInfo.balance >= amount,       ERROR_NOT_ENOUGH_BALANCE);
+        require(targetOwnerAddress != _ownerAddress, ERROR_CAN_NOT_TRANSFER_TO_YOURSELF);
 
         // Event
         emit tokensSent(amount, targetOwnerAddress, body);
@@ -99,7 +104,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override
     {
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
-        require(walletAddress == msg.sender || _rootAddress == msg.sender, 9999);
+        require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_OWNER_OR_ROOT);
 
         _walletInfo.balance += amount;
 
