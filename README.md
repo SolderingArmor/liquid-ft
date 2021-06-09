@@ -187,7 +187,7 @@ event tokensSent(uint128 amount, address targetOwnerAddress, TvmCell body);
 
 Event on Token received;
 
-`amount` - Amount of tokens sent;
+`amount` - Amount of tokens received;
 
 `senderOwnerAddress` - Sender Wallet owner address;
 
