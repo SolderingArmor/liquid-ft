@@ -131,15 +131,15 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     onBounce(TvmSlice slice) external 
     {
-		uint32 functionId = slice.decode(uint32);
-		if (functionId == tvm.functionId(receiveTransfer) || functionId == tvm.functionId(burn)) 
+        uint32 functionId = slice.decode(uint32);
+        if (functionId == tvm.functionId(receiveTransfer) || functionId == tvm.functionId(burn)) 
         {
-			uint128 amount = slice.decode(uint128);
+            uint128 amount = slice.decode(uint128);
             _walletInfo.balance += amount;
 
             _ownerAddress.transfer(0, true, 128);
-		}
-	}
+        }
+    }
 }
 
 //================================================================================
