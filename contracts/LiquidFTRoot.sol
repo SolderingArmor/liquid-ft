@@ -17,7 +17,8 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     // Variables
     TvmCell   static _walletCode; //
     TokenInfo static _rootInfo;   //
-    bytes            _icon;       //
+    bytes            _icon;       // utf8-string with encoded PNG image. The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64.
+                                  // _icon = "data:image/png;base64,iVBORw0KG...5CYII=";
 
     //========================================
     // Modifiers

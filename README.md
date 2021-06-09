@@ -221,6 +221,8 @@ function callWalletCode() external view responsible returns (TvmCell);
 
 Returns the Root information + binary icon using the following structure:
 
+Icon is a utf8-string with encoded PNG image. The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64. Example: "data:image/png;base64,iVBORw0KG...5CYII=";
+
 ``` js
 struct TokenInfo
 {
