@@ -135,7 +135,7 @@ Receives Tokens from another Wallet or Root (minting);
 
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
-`notifyAddress` - `iFTNotify` `contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
 
 `body` - Custom body (business-logic specific, may be empty);
 
