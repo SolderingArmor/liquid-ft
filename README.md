@@ -90,7 +90,7 @@ function  getRootAddress() external view             returns (address);
 function callRootAddress() external view responsible returns (address);
 ```
 
-min
+
 #### burn
 
 Sends burn command to Root;
