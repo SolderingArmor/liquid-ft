@@ -62,10 +62,16 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
 
     //========================================
     //
-    function createWallet(address ownerAddress) external override reserve
+    function createWallet(address ownerAddress, uint128 tokensAmount) external override reserve
     {
+        if(tokensAmount > 0)
+        {
+            require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);
+            _rootInfo.totalSupply += tokensAmount;
+        }
+        
         (, TvmCell stateInit) = _getWalletInit(ownerAddress);
-        address walletAddress = new LiquidFTWallet{value: 0, flag: 128, stateInit: stateInit}(msg.sender);
+        address walletAddress = new LiquidFTWallet{value: 0, flag: 128, stateInit: stateInit, wid: address(this).wid}(msg.sender, tokensAmount);
 
         // Event
         emit walletCreated(ownerAddress, walletAddress);
@@ -78,7 +84,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
         (address walletAddress, ) = _getWalletInit(senderOwnerAddress);
         require(walletAddress == msg.sender, ERROR_WALLET_ADDRESS_INVALID);
 
-        _rootInfo.balance -= amount;
+        _rootInfo.totalSupply -= amount;
 
         // Event
         emit tokensBurned(amount, senderOwnerAddress);
@@ -94,7 +100,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
         (address walletAddress, ) = _getWalletInit(targetOwnerAddress);
 
         // Mint adds balance to root total supply
-        _rootInfo.balance += amount;
+        _rootInfo.totalSupply += amount;
         ILiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, addressZero, _ownerAddress, notifyAddress, body);
         
         // Event
@@ -109,7 +115,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
 		if (functionId == tvm.functionId(LiquidFTWallet.receiveTransfer)) 
         {
 			uint128 amount = slice.decode(uint128);
-            _rootInfo.balance -= amount;
+            _rootInfo.totalSupply -= amount;
 
             // We know for sure that initiator in "mint" process is RTW owner;
             _ownerAddress.transfer(0, true, 128);

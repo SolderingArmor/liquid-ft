@@ -22,10 +22,10 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Variables
-    address    static _rootAddress;  //
-    address    static _ownerAddress; //
-    TokenInfo         _walletInfo;   //
-    address           _notifyOnReceiveAddress;
+    address static _rootAddress;            //
+    address static _ownerAddress;           //
+    address        _notifyOnReceiveAddress; //
+    uint128        _balance;                //
 
     //========================================
     // Modifiers
@@ -36,10 +36,12 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode() external view override                     returns (TvmCell)  {    return                      (tvm.code());    }
-    function callWalletCode() external view override responsible reserve returns (TvmCell)  {    return {value: 0, flag: 128}(tvm.code());    }
-    function  getWalletInfo() external view override                     returns (TokenInfo){    return                      (_walletInfo);   }
-    function callWalletInfo() external view override responsible reserve returns (TokenInfo){    return {value: 0, flag: 128}(_walletInfo);   }
+    function  getWalletCode()   external view override                     returns (TvmCell)  {    return                      (tvm.code());     }
+    function callWalletCode()   external view override responsible reserve returns (TvmCell)  {    return {value: 0, flag: 128}(tvm.code());     }
+    function  getOwnerAddress() external view override                     returns (address)  {    return                      (_ownerAddress);  }
+    function callOwnerAddress() external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_ownerAddress);  }
+    function  getRootAddress()  external view override                     returns (address)  {    return                      (_rootAddress);   }
+    function callRootAddress()  external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_rootAddress);   }
 
     //========================================
     //
@@ -59,11 +61,12 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    constructor(address initiatorAddress) public onlyRoot
+    constructor(address initiatorAddress, uint128 tokensAmount) public onlyRoot
     {
         _reserve();
         tvm.accept();
 
+        _balance                = tokensAmount;
         _notifyOnReceiveAddress = addressZero;
 
         initiatorAddress.transfer(0, true, 128);
@@ -73,8 +76,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     function burn(uint128 amount) public override onlyOwner reserve
     {
-        require(_walletInfo.balance >= amount, ERROR_NOT_ENOUGH_BALANCE);
-        _walletInfo.balance -= amount;
+        require(_balance >= amount, ERROR_NOT_ENOUGH_BALANCE);
+        _balance -= amount;
 
         // Event
         emit tokensBurned(amount);
@@ -87,7 +90,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override onlyOwner reserve
     {
-        require(_walletInfo.balance >= amount,       ERROR_NOT_ENOUGH_BALANCE);
+        require(_balance >= amount,                  ERROR_NOT_ENOUGH_BALANCE);
         require(targetOwnerAddress != _ownerAddress, ERROR_CAN_NOT_TRANSFER_TO_YOURSELF);
 
         // Event
@@ -95,7 +98,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
         (address walletAddress, ) = calculateFutureWalletAddress(targetOwnerAddress);
 
-        _walletInfo.balance -= amount;
+        _balance -= amount;
         LiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, _ownerAddress, initiatorAddress, notifyAddress, body);
     }
 
@@ -106,7 +109,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
         require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_OWNER_OR_ROOT);
 
-        _walletInfo.balance += amount;
+        _balance += amount;
 
         // Event
         emit tokensReceived(amount, senderOwnerAddress, body);
@@ -114,11 +117,11 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         // Notify sender and receiver (if required)
         if(notifyAddress != addressZero)
         {
-            iFTNotify(notifyAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, _ownerAddress, initiatorAddress, body);
+            iFTNotify(notifyAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, senderOwnerAddress, initiatorAddress, body);
         }
         if(_notifyOnReceiveAddress != addressZero)
         {
-            iFTNotify(_notifyOnReceiveAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, _ownerAddress, initiatorAddress, body);
+            iFTNotify(_notifyOnReceiveAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, senderOwnerAddress, initiatorAddress, body);
         }
 
         // Return the change to initiator
@@ -140,7 +143,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         if (functionId == tvm.functionId(receiveTransfer) || functionId == tvm.functionId(burn)) 
         {
             uint128 amount = slice.decode(uint128);
-            _walletInfo.balance += amount;
+            _balance += amount;
 
             _ownerAddress.transfer(0, true, 128);
         }

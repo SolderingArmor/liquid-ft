@@ -1,6 +1,6 @@
 ---
-tip: 4
-title: TRC-4 Fungible Tokens Standard
+tip: 5
+title: TRC-5 Fungible Tokens Standard
 author: Anton Platonov <anton@platonov.us>, Dmitriy Yankin <d.s.yankin@gmail.com>
 type: Standards Track
 category: TRC
@@ -69,28 +69,28 @@ function callWalletCode() external view responsible returns (TvmCell);
 ```
 
 
-#### getWalletInfo
-#### callWalletInfo
+#### getOwnerAddress
+#### callOwnerAddress
 
-Returns the Wallet information using the following structure:
-
-``` js
-struct TokenInfo
-{
-    bytes   name;     // Token name;
-    bytes   symbol;   // Token symbol;
-    uint8   decimals; // Token decimals;
-    uint128 balance;  // Token balance: for Root   it is Total Supply;
-                      //                for Wallet it is Current Balance;
-}
-```
+Returns the Wallet Owner address;
 
 ``` js
-function  getWalletInfo() external view             returns (TokenInfo);
-function callWalletInfo() external view responsible returns (TokenInfo);
+function  getOwnerAddress() external view             returns (address);
+function callOwnerAddress() external view responsible returns (address);
 ```
 
 
+#### getRootAddress
+#### callRootAddress
+
+Returns the Wallet Root address;
+
+``` js
+function  getRootAddress() external view             returns (address);
+function callRootAddress() external view responsible returns (address);
+```
+
+min
 #### burn
 
 Sends burn command to Root;
@@ -226,11 +226,10 @@ Icon is a utf8-string with encoded PNG image. The string format is `"data:image/
 ``` js
 struct TokenInfo
 {
-    bytes   name;     // Token name;
-    bytes   symbol;   // Token symbol;
-    uint8   decimals; // Token decimals;
-    uint128 balance;  // Token balance: for Root   it is Total Supply;
-                      //                for Wallet it is Current Balance;
+    bytes   name;        // Token name;
+    bytes   symbol;      // Token symbol;
+    uint8   decimals;    // Token decimals;
+    uint128 totalSupply; // Token total supply;
 }
 ```
 
@@ -288,9 +287,10 @@ function mint(uint128 amount, address targetOwnerAddress, address notifyAddress,
 Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
 
 `ownerAddress` - Receiver Wallet owner address to calculate Wallet address;
+`tokensAmount` - When called by Root Owner, you can mint Tokens when creating a wallet;
 
 ``` js
-function createWallet(address ownerAddress) external;
+function createWallet(address ownerAddress, uint128 tokensAmount) external;
 ```
 
 

@@ -7,11 +7,10 @@ pragma AbiHeader expire;
 //
 struct TokenInfo
 {
-    bytes   name;     // Token name;
-    bytes   symbol;   // Token symbol;
-    uint8   decimals; // Token decimals;
-    uint128 balance;  // Token balance: for Root   it is Total Supply;
-                      //                for Wallet it is Current Balance;
+    bytes   name;        // Token name;
+    bytes   symbol;      // Token symbol;
+    uint8   decimals;    // Token decimals;
+    uint128 totalSupply; // Token total supply;
 }
 
 //================================================================================
@@ -65,8 +64,9 @@ interface ILiquidFTRoot
     /// @notice Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
     ///
     /// @param ownerAddress - Receiver Wallet owner address to calculate Wallet address;
+    /// @param tokensAmount - When called by Root Owner, you can mint Tokens when creating a wallet;
     //
-    function createWallet(address ownerAddress) external;
+    function createWallet(address ownerAddress, uint128 tokensAmount) external;
 }
 
 //================================================================================
