@@ -91,6 +91,17 @@ function callRootAddress() external view responsible returns (address);
 ```
 
 
+#### getBalance
+#### callBalance
+
+Returns the Wallet balance;
+
+``` js
+function  getBalance() external view             returns (uint128);
+function callBalance() external view responsible returns (uint128);
+```
+
+
 #### burn
 
 Sends burn command to Root;

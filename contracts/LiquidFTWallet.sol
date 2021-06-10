@@ -42,6 +42,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     function callOwnerAddress() external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_ownerAddress);  }
     function  getRootAddress()  external view override                     returns (address)  {    return                      (_rootAddress);   }
     function callRootAddress()  external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_rootAddress);   }
+    function  getBalance()      external view override                     returns (uint128)  {    return                      (_balance);       }
+    function callBalance()      external view override responsible reserve returns (uint128)  {    return {value: 0, flag: 128}(_balance);       }
 
     //========================================
     //

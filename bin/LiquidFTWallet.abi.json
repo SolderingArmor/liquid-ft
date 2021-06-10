@@ -5,7 +5,8 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"initiatorAddress","type":"address"}
+				{"name":"initiatorAddress","type":"address"},
+				{"name":"tokensAmount","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -28,20 +29,54 @@
 			]
 		},
 		{
-			"name": "getWalletInfo",
+			"name": "getOwnerAddress",
 			"inputs": [
 			],
 			"outputs": [
-				{"components":[{"name":"name","type":"bytes"},{"name":"symbol","type":"bytes"},{"name":"decimals","type":"uint8"},{"name":"balance","type":"uint128"}],"name":"value0","type":"tuple"}
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
-			"name": "callWalletInfo",
+			"name": "callOwnerAddress",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"}
 			],
 			"outputs": [
-				{"components":[{"name":"name","type":"bytes"},{"name":"symbol","type":"bytes"},{"name":"decimals","type":"uint8"},{"name":"balance","type":"uint128"}],"name":"value0","type":"tuple"}
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getRootAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "callRootAddress",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getBalance",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"}
+			]
+		},
+		{
+			"name": "callBalance",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"}
 			]
 		},
 		{

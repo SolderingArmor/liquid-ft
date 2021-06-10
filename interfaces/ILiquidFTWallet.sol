@@ -25,6 +25,8 @@ interface ILiquidFTWallet
     function callOwnerAddress() external view responsible returns (address); // Owner address, responsible;
     function  getRootAddress()  external view             returns (address); // Root address;
     function callRootAddress()  external view responsible returns (address); // Root address, responsible;
+    function  getBalance()      external view             returns (uint128); // Wallet balance;
+    function callBalance()      external view responsible returns (uint128); // Wallet balance, responsible;
 
     //========================================
     /// @notice Sends burn command to Root;
