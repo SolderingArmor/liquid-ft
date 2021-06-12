@@ -19,14 +19,16 @@ interface ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode()   external view             returns (TvmCell); // Wallet code;
-    function callWalletCode()   external view responsible returns (TvmCell); // Wallet code, responsible;
-    function  getOwnerAddress() external view             returns (address); // Owner address;
-    function callOwnerAddress() external view responsible returns (address); // Owner address, responsible;
-    function  getRootAddress()  external view             returns (address); // Root address;
-    function callRootAddress()  external view responsible returns (address); // Root address, responsible;
-    function  getBalance()      external view             returns (uint128); // Wallet balance;
-    function callBalance()      external view responsible returns (uint128); // Wallet balance, responsible;
+    function  getWalletCode()             external view             returns (TvmCell); // Wallet code;
+    function callWalletCode()             external view responsible returns (TvmCell); // Wallet code, responsible;
+    function  getOwnerAddress()           external view             returns (address); // Owner address;
+    function callOwnerAddress()           external view responsible returns (address); // Owner address, responsible;
+    function  getRootAddress()            external view             returns (address); // Root address;
+    function callRootAddress()            external view responsible returns (address); // Root address, responsible;
+    function  getBalance()                external view             returns (uint128); // Wallet balance;
+    function callBalance()                external view responsible returns (uint128); // Wallet balance, responsible;
+    function  getNotifyOnReceiveAddress() external view             returns (address); // Notify address;
+    function callNotifyOnReceiveAddress() external view responsible returns (address); // Notify address, responsible;
 
     //========================================
     /// @notice Sends burn command to Root;

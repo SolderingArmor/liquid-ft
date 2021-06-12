@@ -69,6 +69,7 @@
 			"name": "createWallet",
 			"inputs": [
 				{"name":"ownerAddress","type":"address"},
+				{"name":"notifyOnReceiveAddress","type":"address"},
 				{"name":"tokensAmount","type":"uint128"}
 			],
 			"outputs": [

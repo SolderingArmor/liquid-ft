@@ -36,14 +36,16 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode()   external view override                     returns (TvmCell)  {    return                      (tvm.code());     }
-    function callWalletCode()   external view override responsible reserve returns (TvmCell)  {    return {value: 0, flag: 128}(tvm.code());     }
-    function  getOwnerAddress() external view override                     returns (address)  {    return                      (_ownerAddress);  }
-    function callOwnerAddress() external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_ownerAddress);  }
-    function  getRootAddress()  external view override                     returns (address)  {    return                      (_rootAddress);   }
-    function callRootAddress()  external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_rootAddress);   }
-    function  getBalance()      external view override                     returns (uint128)  {    return                      (_balance);       }
-    function callBalance()      external view override responsible reserve returns (uint128)  {    return {value: 0, flag: 128}(_balance);       }
+    function  getWalletCode()             external view override                     returns (TvmCell)  {    return                      (tvm.code());               }
+    function callWalletCode()             external view override responsible reserve returns (TvmCell)  {    return {value: 0, flag: 128}(tvm.code());               }
+    function  getOwnerAddress()           external view override                     returns (address)  {    return                      (_ownerAddress);            }
+    function callOwnerAddress()           external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_ownerAddress);            }
+    function  getRootAddress()            external view override                     returns (address)  {    return                      (_rootAddress);             }
+    function callRootAddress()            external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_rootAddress);             }
+    function  getBalance()                external view override                     returns (uint128)  {    return                      (_balance);                 }
+    function callBalance()                external view override responsible reserve returns (uint128)  {    return {value: 0, flag: 128}(_balance);                 }
+    function  getNotifyOnReceiveAddress() external view override                     returns (address)  {    return                      (_notifyOnReceiveAddress);  }
+    function callNotifyOnReceiveAddress() external view override responsible reserve returns (address)  {    return {value: 0, flag: 128}(_notifyOnReceiveAddress);  }
 
     //========================================
     //
@@ -63,13 +65,13 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    constructor(address initiatorAddress, uint128 tokensAmount) public onlyRoot
+    constructor(address initiatorAddress, address notifyOnReceiveAddress, uint128 tokensAmount) public onlyRoot
     {
         _reserve();
         tvm.accept();
 
         _balance                = tokensAmount;
-        _notifyOnReceiveAddress = addressZero;
+        _notifyOnReceiveAddress = notifyOnReceiveAddress;
 
         initiatorAddress.transfer(0, true, 128);
     }

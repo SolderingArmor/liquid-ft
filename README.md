@@ -102,6 +102,17 @@ function callBalance() external view responsible returns (uint128);
 ```
 
 
+#### getNotifyOnReceiveAddress
+#### callNotifyOnReceiveAddress
+
+Returns the Wallet balance;
+
+``` js
+function  getNotifyOnReceiveAddress() external view             returns (address);
+function callNotifyOnReceiveAddress() external view responsible returns (address);
+```
+
+
 #### burn
 
 Sends burn command to Root;
@@ -299,9 +310,10 @@ Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
 
 `ownerAddress` - Receiver Wallet owner address to calculate Wallet address;
 `tokensAmount` - When called by Root Owner, you can mint Tokens when creating a wallet;
+`notifyOnReceiveAddress` - `iFTNotify` contract address to receive a notification when Wallet receives a transfer;
 
 ``` js
-function createWallet(address ownerAddress, uint128 tokensAmount) external;
+function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external;
 ```
 
 

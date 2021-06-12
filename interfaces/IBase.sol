@@ -13,7 +13,7 @@ abstract contract IBase
 
     //========================================
     // Modifiers
-    function _reserve() internal inline view {    tvm.rawReserve(gasToValue(10000, 0), 0);    }
+    function _reserve() internal inline view {    tvm.rawReserve(gasToValue(10000, address(this).wid), 0);    }
     modifier  reserve     {    _reserve();    _;                                       }
     modifier  returnChange{                   _; msg.sender.transfer(0, true, 128);    }
 }

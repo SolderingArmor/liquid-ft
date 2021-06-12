@@ -63,10 +63,11 @@ interface ILiquidFTRoot
     //========================================
     /// @notice Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
     ///
-    /// @param ownerAddress - Receiver Wallet owner address to calculate Wallet address;
-    /// @param tokensAmount - When called by Root Owner, you can mint Tokens when creating a wallet;
+    /// @param ownerAddress           - Receiver Wallet owner address to calculate Wallet address;
+    /// @param tokensAmount           - When called by Root Owner, you can mint Tokens when creating a wallet;
+    /// @param notifyOnReceiveAddress - "iFTNotify" contract address to receive a notification when Wallet receives a transfer;
     //
-    function createWallet(address ownerAddress, uint128 tokensAmount) external;
+    function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external;
 }
 
 //================================================================================
