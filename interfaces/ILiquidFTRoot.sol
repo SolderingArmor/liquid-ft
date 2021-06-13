@@ -5,16 +5,6 @@ pragma AbiHeader expire;
 
 //================================================================================
 //
-struct TokenInfo
-{
-    bytes   name;        // Token name;
-    bytes   symbol;      // Token symbol;
-    uint8   decimals;    // Token decimals;
-    uint128 totalSupply; // Token total supply;
-}
-
-//================================================================================
-//
 interface iFTNotify
 {
     function receiveNotification(uint128 amount, address senderOwnerAddress, address initiatorAddress, TvmCell body) external;
@@ -32,12 +22,12 @@ interface ILiquidFTRoot
 
     //========================================
     // Getters
-    function  getWalletCode()                        external view             returns (TvmCell);          // Wallet code;
-    function callWalletCode()                        external view responsible returns (TvmCell);          // Wallet code, responsible;
-    function  getRootInfo()                          external view             returns (TokenInfo, bytes); // Token information + icon;
-    function callRootInfo()                          external view responsible returns (TokenInfo, bytes); // Token information + icon, responsible;
-    function  getWalletAddress(address ownerAddress) external view             returns (address);          // Arbitratry Wallet address;
-    function callWalletAddress(address ownerAddress) external view responsible returns (address);          // Arbitratry Wallet address, responsible;
+    function  getWalletCode()                        external view             returns (TvmCell);                             // Wallet code;
+    function callWalletCode()                        external view responsible returns (TvmCell);                             // Wallet code, responsible;
+    function  getRootInfo()                          external view             returns (bytes, bytes, uint8, uint128, bytes); // Token information + icon;
+    function callRootInfo()                          external view responsible returns (bytes, bytes, uint8, uint128, bytes); // Token information + icon, responsible;
+    function  getWalletAddress(address ownerAddress) external view             returns (address);                             // Arbitratry Wallet address;
+    function callWalletAddress(address ownerAddress) external view responsible returns (address);                             // Arbitratry Wallet address, responsible;
 
     //========================================
     /// @notice Receives burn command from Wallet;
@@ -68,6 +58,16 @@ interface ILiquidFTRoot
     /// @param notifyOnReceiveAddress - "iFTNotify" contract address to receive a notification when Wallet receives a transfer;
     //
     function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external;
+
+    //========================================
+    /// @notice Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
+    ///         Returns wallet address;
+    ///
+    /// @param ownerAddress           - Receiver Wallet owner address to calculate Wallet address;
+    /// @param tokensAmount           - When called by Root Owner, you can mint Tokens when creating a wallet;
+    /// @param notifyOnReceiveAddress - "iFTNotify" contract address to receive a notification when Wallet receives a transfer;
+    //
+    function callCreateWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external responsible returns (address);
 }
 
 //================================================================================
