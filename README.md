@@ -1,6 +1,6 @@
 ---
-tip: 5
-title: TRC-5 Fungible Tokens Standard
+tip: 8
+title: TRC-8 Fungible Tokens Standard
 author: Anton Platonov <anton@platonov.us>, Dmitriy Yankin <d.s.yankin@gmail.com>
 type: Standards Track
 category: TRC
