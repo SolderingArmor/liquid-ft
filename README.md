@@ -10,13 +10,23 @@ created: 2021-06-08
 
 ## Simple Summary
 
-A standard interface for fungible tokens.
+A standard interface for simple yet versatile fungible tokens.
+
+The motivation behind creation of new fungible token besides TIP-3 is that TIP-3 original standard:
+ * doesn't respect asynchronous nature of Free TON blockchain (no callbacks or callback getters);
+ * is too broad (covers 4 types of tokens instead of one); 
+ * is complicated (including ownership by both public key and address);
+ * allows sending tokens using wallet address directly (see `internalTransferFrom`), terget contract can be a malicious contract which implements `internalTransfer` function which will end up in loosing Tokens;
+ * requires user to worry about wallet's balance (having multiple wallets without automation system that manages balances is a great place for human errors);
+ 
+thus different teams are forced to create numerous TIP-3 forks that are incompatible with each other.
 
 
 ## Abstract
 
 The following standard allows for the implementation of a standard API for fungible tokens within smart contracts.
-This standard provides basic functionality to create wallets, transfer and manage tokens.
+
+This standard provides basic functionality to create wallets, transfer and manage tokens and send/receive events.
 
 
 ## Motivation
