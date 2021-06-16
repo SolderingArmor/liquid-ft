@@ -8,19 +8,19 @@ status: Pending
 created: 2021-06-08
 ---
 
-## Simple Summary
+# Simple Summary
 
 A standard interface for simple yet versatile fungible tokens.
 
 
-## Abstract
+# Abstract
 
 The following standard allows for the implementation of a standard API for fungible tokens within smart contracts.
 
 This standard provides basic functionality to create wallets, transfer and manage tokens and send/receive events.
 
 
-## Motivation
+# Motivation
 
 A standard interface allows any tokens on Free TON blockchain to be re-used by other applications: from marketplaces to decentralized exchanges.
 
@@ -34,7 +34,7 @@ The motivation behind creation of new fungible token besides TIP-3 is that TIP-3
 thus different teams are forced to create numerous TIP-3 forks that are incompatible with each other.
 
 
-## Specification
+# Specification
 
 ## Notification Receiver
 ### Methods
@@ -368,18 +368,18 @@ event tokensBurned(uint128 amount, address senderOwnerAddress);
 ```
 
 
-## Implementation
+# Implementation
 
 Interface is in `interfaces` folder.
 
 `Liquid contracts` Root and Wallet implementation in `contracts` folder.
 
 
-## History
+# History
 
 TODO
 
 
 
-## Copyright
+# Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
