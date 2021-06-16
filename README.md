@@ -2,9 +2,8 @@
 tip: 6
 title: TRC-6 Fungible Tokens Standard
 author: Anton Platonov <anton@platonov.us>, Dmitriy Yankin <d.s.yankin@gmail.com>
-type: Standards Track
-category: TRC
-status: Pending
+type: TRC
+status: Draft
 created: 2021-06-08
 ---
 
