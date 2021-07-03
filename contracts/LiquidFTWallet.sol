@@ -14,11 +14,12 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 {
     //========================================
     // Error codes
-    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER      = 100;
-    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT       = 101;
-    uint constant ERROR_MESSAGE_SENDER_IS_NOT_OWNER_OR_ROOT = 102;
-    uint constant ERROR_NOT_ENOUGH_BALANCE                  = 201;
-    uint constant ERROR_CAN_NOT_TRANSFER_TO_YOURSELF        = 202;
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER       = 100;
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT        = 101;
+    uint constant ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT = 102;
+    uint constant ERROR_NOT_ENOUGH_BALANCE                   = 201;
+    uint constant ERROR_CAN_NOT_TRANSFER_TO_YOURSELF         = 202;
+    uint constant ERROR_ONLY_ROOT_CAN_MINT                   = 203;
 
     //========================================
     // Variables
@@ -65,11 +66,16 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    constructor(address initiatorAddress, address notifyOnReceiveAddress, uint128 tokensAmount) public onlyRoot
+    constructor(address senderOwnerAddress, address initiatorAddress, address notifyOnReceiveAddress, uint128 tokensAmount) public
     {
-        _reserve();
-        tvm.accept();
+        (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
+        require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
+        if(_rootAddress != msg.sender)
+        {
+            require(tokensAmount == 0, ERROR_ONLY_ROOT_CAN_MINT);
+        }
 
+        _reserve();
         _balance                = tokensAmount;
         _notifyOnReceiveAddress = notifyOnReceiveAddress;
 
@@ -100,7 +106,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         // Event
         emit tokensSent(amount, targetOwnerAddress, body);
 
-        (address walletAddress, ) = calculateFutureWalletAddress(targetOwnerAddress);
+        (address walletAddress, TvmCell stateInit) = calculateFutureWalletAddress(targetOwnerAddress);
+        new LiquidFTWallet{value: msg.value / 2, flag: 0, bounce: false, stateInit: stateInit, wid: address(this).wid}(_ownerAddress, msg.sender, addressZero, 0);
 
         _balance -= amount;
         LiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, _ownerAddress, initiatorAddress, notifyAddress, body);
@@ -111,7 +118,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override
     {
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
-        require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_OWNER_OR_ROOT);
+        require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
 
         _balance += amount;
 

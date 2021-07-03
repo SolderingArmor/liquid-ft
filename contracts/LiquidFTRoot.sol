@@ -84,7 +84,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
         (address walletAddress, TvmCell stateInit) = _getWalletInit(ownerAddress);
         // Event
         emit walletCreated(ownerAddress, walletAddress);
-        new LiquidFTWallet{value: value, flag: flag, stateInit: stateInit, wid: address(this).wid}(msg.sender, notifyOnReceiveAddress, tokensAmount);
+        new LiquidFTWallet{value: value, flag: flag, bounce: false, stateInit: stateInit, wid: address(this).wid}(addressZero, msg.sender, notifyOnReceiveAddress, tokensAmount);
 
         return walletAddress;
     }
@@ -122,8 +122,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     //
     function mint(uint128 amount, address targetOwnerAddress, address notifyAddress, TvmCell body) external override onlyOwner reserve
     {
-        (address walletAddress, ) = _getWalletInit(targetOwnerAddress);
-
+        address walletAddress = _createWallet(targetOwnerAddress, addressZero, 0, msg.value / 2, 0);
         // Event
         emit tokensMinted(amount, targetOwnerAddress);
 

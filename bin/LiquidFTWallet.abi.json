@@ -5,6 +5,7 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"senderOwnerAddress","type":"address"},
 				{"name":"initiatorAddress","type":"address"},
 				{"name":"notifyOnReceiveAddress","type":"address"},
 				{"name":"tokensAmount","type":"uint128"}

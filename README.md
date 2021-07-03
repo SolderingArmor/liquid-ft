@@ -140,6 +140,7 @@ function burn(uint128 amount) external;
 Sends Tokens to another Wallet;
 
 ACCESS: only Wallet owner;
+RESTRICTIONS: sender wallet MUST create target wallet if it doesn't exist.
 
 `amount` - Amount of tokens to send;
 
@@ -299,6 +300,9 @@ function burn(uint128 amount, address senderOwnerAddress, address initiatorAddre
 #### mint
 
 Mints tokens from Root to a target Wallet;
+
+ACCESS: only root owner;
+RESTRICTIONS: root MUST create target wallet if it doesn't exist.
 
 `amount` - Amount of tokens to mint;
 
