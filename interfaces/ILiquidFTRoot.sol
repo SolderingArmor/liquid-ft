@@ -16,18 +16,18 @@ interface ILiquidFTRoot
 {
     //========================================
     // Events
-    event tokensMinted (uint128 amount,       address targetOwnerAddress);
+    event tokensMinted (uint128 amount,       address targetOwnerAddress, TvmCell body);
     event walletCreated(address ownerAddress, address walletAddress     );
     event tokensBurned (uint128 amount,       address senderOwnerAddress);
 
     //========================================
     // Getters
-    function  getWalletCode()                        external view             returns (TvmCell);                             // Wallet code;
-    function callWalletCode()                        external view responsible returns (TvmCell);                             // Wallet code, responsible;
-    function  getRootInfo()                          external view             returns (bytes, bytes, uint8, uint128, bytes); // Token information + icon;
-    function callRootInfo()                          external view responsible returns (bytes, bytes, uint8, uint128, bytes); // Token information + icon, responsible;
-    function  getWalletAddress(address ownerAddress) external view             returns (address);                             // Arbitratry Wallet address;
-    function callWalletAddress(address ownerAddress) external view responsible returns (address);                             // Arbitratry Wallet address, responsible;
+    function  getWalletCode()                        external view             returns (TvmCell walletCode);    // Wallet code;
+    function callWalletCode()                        external view responsible returns (TvmCell walletCode);    // Wallet code, responsible;
+    function  getWalletAddress(address ownerAddress) external view             returns (address walletAddress); // Arbitratry Wallet address;
+    function callWalletAddress(address ownerAddress) external view responsible returns (address walletAddress); // Arbitratry Wallet address, responsible;
+    function  getRootInfo()                          external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon); // Token information + icon;
+    function callRootInfo()                          external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon); // Token information + icon, responsible;
 
     //========================================
     /// @notice Receives burn command from Wallet;
@@ -51,16 +51,17 @@ interface ILiquidFTRoot
     function mint(uint128 amount, address targetOwnerAddress, address notifyAddress, TvmCell body) external;
 
     //========================================
-    /// @notice Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
+    /// @notice Creates a new Wallet with "tokensAmount" Tokens; "tokensAmount > 0" is available only for Root;
+    ///         Returns wallet address;
     ///
     /// @param ownerAddress           - Receiver Wallet owner address to calculate Wallet address;
-    /// @param tokensAmount           - When called by Root Owner, you can mint Tokens when creating a wallet;
     /// @param notifyOnReceiveAddress - "iFTNotify" contract address to receive a notification when Wallet receives a transfer;
+    /// @param tokensAmount           - When called by Root Owner, you can mint Tokens when creating a wallet;
     //
-    function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external;
+    function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external returns (address);
 
     //========================================
-    /// @notice Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
+    /// @notice Creates a new Wallet with "tokensAmount" "tokensAmount > 0" is available only for Root;
     ///         Returns wallet address;
     ///
     /// @param ownerAddress           - Receiver Wallet owner address to calculate Wallet address;

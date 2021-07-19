@@ -251,23 +251,13 @@ function callWalletCode() external view responsible returns (TvmCell);
 #### getRootInfo
 #### callRootInfo
 
-Returns the Root information + binary icon using the following structure:
+Returns the Root information + binary icon (icon is an array of chunks, concatenate the chunks to get the media).
 
 Icon is a utf8-string with encoded PNG image (RFC 2397). The string format is `"data:image/png;base64,<image>"`, where image - image bytes encoded in base64. Example: `"data:image/png;base64,iVBORw0KG...5CYII="`;
 
 ``` js
-struct TokenInfo
-{
-    bytes   name;        // Token name;
-    bytes   symbol;      // Token symbol;
-    uint8   decimals;    // Token decimals;
-    uint128 totalSupply; // Token total supply;
-}
-```
-
-``` js
-function  getRootInfo() external view             returns (TokenInfo, bytes);
-function callRootInfo() external view responsible returns (TokenInfo, bytes);
+function  getRootInfo() external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
+function callRootInfo() external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
 ```
 
 
@@ -318,15 +308,19 @@ function mint(uint128 amount, address targetOwnerAddress, address notifyAddress,
 
 
 #### createWallet
+#### callCreateWallet
 
-Creates a new Wallet with 0 Tokens; Anyone can call this (not only Root);
+Creates a new Wallet with `tokensAmount` Tokens; `tokensAmount > 0` is available only for root;
+
+Returns Wallet address;
 
 `ownerAddress` - Receiver Wallet owner address to calculate Wallet address;
 `tokensAmount` - When called by Root Owner, you can mint Tokens when creating a wallet;
 `notifyOnReceiveAddress` - `iFTNotify` contract address to receive a notification when Wallet receives a transfer;
 
 ``` js
-function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external;
+function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external returns (address);
+function callCreateWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external responsible returns (address);
 ```
 
 
@@ -340,8 +334,10 @@ Event on Token burn;
 
 `senderOwnerAddress` - Wallet owner address (mint receiver);
 
+`body` - Custom body (business-logic specific, may be empty);
+
 ``` js
-event tokensMinted(uint128 amount, address targetOwnerAddress);
+event tokensMinted(uint128 amount, address targetOwnerAddress, TvmCell body);
 ```
 
 

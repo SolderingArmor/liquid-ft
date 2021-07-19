@@ -5,7 +5,6 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"icon","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -55,7 +54,7 @@
 				{"name":"symbol","type":"bytes"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
-				{"name":"icon","type":"bytes"}
+				{"name":"icon","type":"bytes[]"}
 			]
 		},
 		{
@@ -68,7 +67,17 @@
 				{"name":"symbol","type":"bytes"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
-				{"name":"icon","type":"bytes"}
+				{"name":"icon","type":"bytes[]"}
+			]
+		},
+		{
+			"name": "setIcon",
+			"inputs": [
+				{"name":"partNum","type":"uint256"},
+				{"name":"partsTotal","type":"uint256"},
+				{"name":"data","type":"bytes"}
+			],
+			"outputs": [
 			]
 		},
 		{
@@ -79,6 +88,7 @@
 				{"name":"tokensAmount","type":"uint128"}
 			],
 			"outputs": [
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
@@ -161,7 +171,8 @@
 			"name": "tokensMinted",
 			"inputs": [
 				{"name":"amount","type":"uint128"},
-				{"name":"targetOwnerAddress","type":"address"}
+				{"name":"targetOwnerAddress","type":"address"},
+				{"name":"body","type":"cell"}
 			],
 			"outputs": [
 			]
