@@ -48,6 +48,7 @@
 		{
 			"name": "getRootInfo",
 			"inputs": [
+				{"name":"includeIcon","type":"bool"}
 			],
 			"outputs": [
 				{"name":"name","type":"bytes"},
@@ -60,7 +61,8 @@
 		{
 			"name": "callRootInfo",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"includeIcon","type":"bool"}
 			],
 			"outputs": [
 				{"name":"name","type":"bytes"},

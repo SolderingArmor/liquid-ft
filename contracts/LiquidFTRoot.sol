@@ -37,13 +37,13 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     function  getWalletAddress(address ownerAddress) external view             override         returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return                      (addr);              }
     function callWalletAddress(address ownerAddress) external view responsible override reserve returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return {value: 0, flag: 128}(addr);              }
 
-    function  getRootInfo() external view override returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
+    function  getRootInfo(bool includeIcon) external view override returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
     {
-        return (_name, _symbol, _decimals, _totalSupply, _icon);  
+        return (_name, _symbol, _decimals, _totalSupply, includeIcon ? _icon : icon);  
     }
-    function callRootInfo() external view responsible override reserve returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
+    function callRootInfo(bool includeIcon) external view responsible override reserve returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
     {
-        return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, _icon);
+        return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, includeIcon ? _icon : icon);
     }
 
     //========================================
