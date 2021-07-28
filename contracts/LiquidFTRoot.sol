@@ -134,9 +134,14 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     //
     function mint(uint128 amount, address targetOwnerAddress, address notifyAddress, TvmCell body) external override onlyOwner reserve
     {
-        address walletAddress = _createWallet(targetOwnerAddress, addressZero, 0, msg.value / 2, 0);
+        address walletAddress = _createWallet(targetOwnerAddress, addressZero, 0, msg.value / 3, 0);
         // Event
         emit tokensMinted(amount, targetOwnerAddress, body);
+
+        if(notifyAddress != addressZero)
+        {
+            iFTNotify(notifyAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, targetOwnerAddress, msg.sender, body);
+        }
 
         // Mint adds balance to root total supply
         _totalSupply += amount;
