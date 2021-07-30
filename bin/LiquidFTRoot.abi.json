@@ -5,6 +5,7 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
 			]

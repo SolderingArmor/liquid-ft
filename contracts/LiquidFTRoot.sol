@@ -48,10 +48,11 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
 
     //========================================
     //
-    constructor() public
+    constructor(address ownerAddress) public
     {
         tvm.accept();
-        _totalSupply = 0;
+        _totalSupply  = 0;
+        _ownerAddress = ownerAddress;
     }
 
     //========================================
