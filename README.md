@@ -140,6 +140,7 @@ function burn(uint128 amount) external;
 Sends Tokens to another Wallet;
 
 ACCESS: only Wallet owner;
+
 RESTRICTIONS: sender wallet MUST create target wallet if it doesn't exist.
 
 `amount` - Amount of tokens to send;
@@ -248,6 +249,17 @@ function callWalletCode() external view responsible returns (TvmCell);
 ```
 
 
+#### getOwnerAddress
+#### callOwnerAddress
+
+Returns the Wallet Owner address;
+
+``` js
+function  getOwnerAddress() external view             returns (address);
+function callOwnerAddress() external view responsible returns (address);
+```
+
+
 #### getRootInfo
 #### callRootInfo
 
@@ -292,6 +304,7 @@ function burn(uint128 amount, address senderOwnerAddress, address initiatorAddre
 Mints tokens from Root to a target Wallet;
 
 ACCESS: only root owner;
+
 RESTRICTIONS: root MUST create target wallet if it doesn't exist.
 
 `amount` - Amount of tokens to mint;
