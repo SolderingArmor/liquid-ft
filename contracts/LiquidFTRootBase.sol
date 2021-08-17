@@ -145,16 +145,16 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     //
     onBounce(TvmSlice slice) external 
     {
-		uint32 functionId = slice.decode(uint32);
-		if (functionId == tvm.functionId(LiquidFTWallet.receiveTransfer)) 
+        uint32 functionId = slice.decode(uint32);
+        if (functionId == tvm.functionId(LiquidFTWallet.receiveTransfer)) 
         {
-			uint128 amount = slice.decode(uint128);
+            uint128 amount = slice.decode(uint128);
             _totalSupply -= amount;
 
             // We know for sure that initiator in "mint" process is RTW owner;
             _ownerAddress.transfer(0, true, 128);
-		}
-	}
+        }
+    }
 }
 
 //================================================================================
