@@ -151,10 +151,14 @@ RESTRICTIONS: sender wallet MUST create target wallet if it doesn't exist.
 
 `notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
 
+`allowReceiverNotify` - Receiver notifications can lead to a potential misuse when receiver notification target won't return the fees which are 1/3 of the whole message fees. Sender can prohibit receiver to send notifications to avoid that; Please use `false` whenever you can.
+
+NOTE: There's a high proobability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
-function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) external;
+function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) external;
 ```
 
 
@@ -170,10 +174,14 @@ Receives Tokens from another Wallet or Root (minting);
 
 `notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
 
+`allowReceiverNotify` - Receiver notifications can lead to a potential misuse when receiver notification target won't return the fees which are 1/3 of the whole message fees. Sender can prohibit receiver to send notifications to avoid that; Please use `false` whenever you can.
+
+NOTE: There's a high proobability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
+
 `body` - Custom body (business-logic specific, may be empty);
 
 ``` js
-function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) external;
+function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) external;
 ```
 
 #### changeNotifyOnReceiveAddress

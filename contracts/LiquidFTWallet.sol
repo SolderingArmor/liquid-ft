@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.44.0;
+pragma ton-solidity >= 0.47.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
@@ -20,6 +20,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     uint constant ERROR_NOT_ENOUGH_BALANCE                   = 201;
     uint constant ERROR_CAN_NOT_TRANSFER_TO_YOURSELF         = 202;
     uint constant ERROR_ONLY_ROOT_CAN_MINT                   = 203;
+    uint constant ERROR_RECEIVER_NOTIFY_DISABLED             = 204;
 
     //========================================
     // Variables
@@ -30,8 +31,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Modifiers
-    function senderIsOwner() internal view inline returns (bool) { return (msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
-    function senderIsRoot()  internal view inline returns (bool) { return (msg.sender.isStdAddrWithoutAnyCast() && _rootAddress  == msg.sender && _rootAddress  != addressZero);    }
+    function senderIsOwner() internal view inline returns (bool) { return (msg.isInternal && msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
+    function senderIsRoot()  internal view inline returns (bool) { return (msg.isInternal && msg.sender.isStdAddrWithoutAnyCast() && _rootAddress  == msg.sender && _rootAddress  != addressZero);    }
     modifier onlyOwner {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
     modifier onlyRoot  {    require(senderIsRoot(),  ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT);     _;    }
 
@@ -98,7 +99,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override onlyOwner reserve
+    function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) public override onlyOwner reserve
     {
         require(_balance >= amount,                  ERROR_NOT_ENOUGH_BALANCE);
         require(targetOwnerAddress != _ownerAddress, ERROR_CAN_NOT_TRANSFER_TO_YOURSELF);
@@ -110,15 +111,18 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         new LiquidFTWallet{value: msg.value / 2, flag: 0, bounce: false, stateInit: stateInit, wid: address(this).wid}(_ownerAddress, msg.sender, addressZero, 0);
 
         _balance -= amount;
-        LiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, _ownerAddress, initiatorAddress, notifyAddress, body);
+        LiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, _ownerAddress, initiatorAddress, notifyAddress, allowReceiverNotify, body);
     }
 
     //========================================
     //
-    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) public override
+    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) public override
     {
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
-        require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
+        require(msg.isInternal && (walletAddress == msg.sender || _rootAddress == msg.sender), ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
+
+        // If receiver wants a notify, sender must approve it
+        require(_notifyOnReceiveAddress == addressZero || allowReceiverNotify, ERROR_RECEIVER_NOTIFY_DISABLED);
 
         _balance += amount;
 

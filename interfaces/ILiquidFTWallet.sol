@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.44.0;
+pragma ton-solidity >= 0.47.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
@@ -40,24 +40,26 @@ interface ILiquidFTWallet
     //========================================
     /// @notice Sends Tokens to another Wallet;
     ///
-    /// @param amount             - Amount of tokens to send;
-    /// @param targetOwnerAddress - Receiver Wallet owner address to calculate Wallet address;
-    /// @param initiatorAddress   - Transaction initiator (e.g. Multisig) to return the unspent change;
-    /// @param notifyAddress      - "iFTNotify" contract address to receive a notification about minting (may be zero);
-    /// @param body               - Custom body (business-logic specific, may be empty);
+    /// @param amount              - Amount of tokens to send;
+    /// @param targetOwnerAddress  - Receiver Wallet owner address to calculate Wallet address;
+    /// @param initiatorAddress    - Transaction initiator (e.g. Multisig) to return the unspent change;
+    /// @param notifyAddress       - "iFTNotify" contract address to receive a notification about minting (may be zero);
+    /// @param allowReceiverNotify - Allow receiver notifications. Please refer to README for information;
+    /// @param body                - Custom body (business-logic specific, may be empty);
     //
-    function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) external;
+    function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) external;
 
     //========================================
     /// @notice Receives Tokens from another Wallet or Root (minting);
     ///
-    /// @param amount             - Amount of tokens to receive;
-    /// @param senderOwnerAddress - Sender Wallet owner address to calculate Wallet address (may be zero when Root performs mint operation);
-    /// @param initiatorAddress   - Transaction initiator (e.g. Multisig) to return the unspent change;
-    /// @param notifyAddress      - "iFTNotify" contract address to receive a notification about minting (may be zero);
-    /// @param body               - Custom body (business-logic specific, may be empty);
+    /// @param amount              - Amount of tokens to receive;
+    /// @param senderOwnerAddress  - Sender Wallet owner address to calculate Wallet address (may be zero when Root performs mint operation);
+    /// @param initiatorAddress    - Transaction initiator (e.g. Multisig) to return the unspent change;
+    /// @param notifyAddress       - "iFTNotify" contract address to receive a notification about minting (may be zero);
+    /// @param allowReceiverNotify - Allow receiver notifications. Please refer to README for information;
+    /// @param body                - Custom body (business-logic specific, may be empty);
     //    
-    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, TvmCell body) external;
+    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) external;
 
     //========================================
     /// @notice Changes contract address to receive a notification when "receiveTransfer" is performed;

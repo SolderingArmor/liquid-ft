@@ -113,6 +113,7 @@
 				{"name":"targetOwnerAddress","type":"address"},
 				{"name":"initiatorAddress","type":"address"},
 				{"name":"notifyAddress","type":"address"},
+				{"name":"allowReceiverNotify","type":"bool"},
 				{"name":"body","type":"cell"}
 			],
 			"outputs": [
@@ -125,6 +126,7 @@
 				{"name":"senderOwnerAddress","type":"address"},
 				{"name":"initiatorAddress","type":"address"},
 				{"name":"notifyAddress","type":"address"},
+				{"name":"allowReceiverNotify","type":"bool"},
 				{"name":"body","type":"cell"}
 			],
 			"outputs": [

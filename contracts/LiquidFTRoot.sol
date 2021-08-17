@@ -102,7 +102,8 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
     }
 
     //========================================
-    //
+    // No returnChange here because 0 (flag 128) TONs are sent to the new wallet
+    // 
     function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external override reserve returns (address)
     {
         address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, 0, 128);
@@ -146,7 +147,7 @@ contract LiquidFTRoot is IOwnable, ILiquidFTRoot
 
         // Mint adds balance to root total supply
         _totalSupply += amount;
-        ILiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, addressZero, _ownerAddress, notifyAddress, body);
+        ILiquidFTWallet(walletAddress).receiveTransfer{value: 0, flag: 128}(amount, addressZero, _ownerAddress, notifyAddress, false, body);
     }
 
     //========================================
