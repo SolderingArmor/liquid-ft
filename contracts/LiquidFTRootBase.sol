@@ -85,8 +85,6 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
         }
         
         (address walletAddress, TvmCell stateInit) = _getWalletInit(ownerAddress);
-        // Event
-        emit walletCreated(ownerAddress, walletAddress);
         new LiquidFTWallet{value: value, flag: flag, bounce: false, stateInit: stateInit, wid: address(this).wid}(addressZero, msg.sender, notifyOnReceiveAddress, tokensAmount);
 
         return walletAddress;
@@ -97,12 +95,18 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     // 
     function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external override reserve returns (address)
     {
+        // Event
+        emit walletCreated(ownerAddress, walletAddress);
+
         address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, 0, 128);
         return(walletAddress);
     }
 
     function callCreateWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external responsible override reserve returns (address)
     {
+        // Event
+        emit walletCreated(ownerAddress, walletAddress);
+        
         address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, msg.value / 2, 0);
         return{value: 0, flag: 128}(walletAddress);
     }
