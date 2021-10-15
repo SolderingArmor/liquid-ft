@@ -114,7 +114,7 @@ function callBalance() external view responsible returns (uint128);
 #### getNotifyOnReceiveAddress
 #### callNotifyOnReceiveAddress
 
-Returns the Wallet balance;
+Returns the Wallet notify address (triggered when `receiveTransfer` is called);
 
 ``` js
 function  getNotifyOnReceiveAddress() external view             returns (address);
@@ -149,11 +149,11 @@ RESTRICTIONS: sender wallet MUST create target wallet if it doesn't exist.
 
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
-`notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` contract address to receive a notification about transfer (may be zero);
 
 `allowReceiverNotify` - Receiver notifications can lead to a potential misuse when receiver notification target won't return the fees which are 1/3 of the whole message fees. Sender can prohibit receiver to send notifications to avoid that; Please use `false` whenever you can.
 
-NOTE: There's a high proobability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
+NOTE: There's a high probability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
 
 `body` - Custom body (business-logic specific, may be empty);
 
@@ -172,11 +172,11 @@ Receives Tokens from another Wallet or Root (minting);
 
 `initiatorAddress` - Transaction initiator (e.g. Multisig) to return the unspent change;
 
-`notifyAddress` - `iFTNotify` contract address to receive a notification about minting (may be zero);
+`notifyAddress` - `iFTNotify` contract address to receive a notification about transfer (may be zero);
 
 `allowReceiverNotify` - Receiver notifications can lead to a potential misuse when receiver notification target won't return the fees which are 1/3 of the whole message fees. Sender can prohibit receiver to send notifications to avoid that; Please use `false` whenever you can.
 
-NOTE: There's a high proobability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
+NOTE: There's a high probability that trustworthy sources (like DEXes or marketplaces) will need to use receiver callback, it should be handled by dApps or DeBots or explicitly stated in their manuals, in that case `true` is required.
 
 `body` - Custom body (business-logic specific, may be empty);
 
@@ -186,7 +186,7 @@ function receiveTransfer(uint128 amount, address senderOwnerAddress, address ini
 
 #### changeNotifyOnReceiveAddress
 
-hanges contract address to receive a notification when `receiveTransfer` is performed;
+Changes contract address to receive a notification when `receiveTransfer` is performed;
 
 ACCESS: only Wallet owner;
 
@@ -211,7 +211,7 @@ event tokensBurned(uint128 amount);
 
 #### tokensSent
 
-Event on Token sent;
+Event on Token send;
 
 `amount` - Amount of tokens sent;
 
@@ -260,7 +260,7 @@ function callWalletCode() external view responsible returns (TvmCell);
 #### getOwnerAddress
 #### callOwnerAddress
 
-Returns the Wallet Owner address;
+Returns Root Owner address;
 
 ``` js
 function  getOwnerAddress() external view             returns (address);
@@ -276,8 +276,8 @@ Returns the Root information + binary icon (icon is an array of chunks, concaten
 Icon is a utf8-string with encoded PNG image (RFC 2397). The string format is `"data:image/png;base64,<image>"`, where image - image bytes encoded in base64. Example: `"data:image/png;base64,iVBORw0KG...5CYII="`;
 
 ``` js
-function  getRootInfo() external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
-function callRootInfo() external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
+function  getRootInfo(bool includeIcon) external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
+function callRootInfo(bool includeIcon) external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon);
 ```
 
 
@@ -340,7 +340,7 @@ Returns Wallet address;
 `notifyOnReceiveAddress` - `iFTNotify` contract address to receive a notification when Wallet receives a transfer;
 
 ``` js
-function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external returns (address);
+function     createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external             returns (address);
 function callCreateWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external responsible returns (address);
 ```
 
@@ -353,7 +353,7 @@ Event on Token burn;
 
 `amount` - Amount of tokens minted;
 
-`senderOwnerAddress` - Wallet owner address (mint receiver);
+`targetOwnerAddress` - Wallet owner address (mint receiver);
 
 `body` - Custom body (business-logic specific, may be empty);
 
