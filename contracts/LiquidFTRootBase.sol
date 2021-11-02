@@ -24,7 +24,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     bytes   static _symbol;      //
     uint8   static _decimals;    //
     uint128        _totalSupply; //
-    bytes[]        _icon;        // utf8-string with encoded PNG image, in chunks (concatenate all chunks to get the media). The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64.
+    string         _metadata;    // utf8-string with encoded PNG image, in chunks (concatenate all chunks to get the media). The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64.
                                  // _icon = "data:image/png;base64,iVBORw0KG...5CYII=";
 
     //========================================
@@ -37,25 +37,20 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     function  getWalletAddress(address ownerAddress) external view             override         returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return                      (addr);              }
     function callWalletAddress(address ownerAddress) external view responsible override reserve returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return {value: 0, flag: 128}(addr);              }
 
-    function  getRootInfo(bool includeIcon) external view override returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
+    function  getRootInfo(bool includeMetadata) external view override returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata)
     {
-        return (_name, _symbol, _decimals, _totalSupply, includeIcon ? _icon : icon);  
+        return (_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);  
     }
-    function callRootInfo(bool includeIcon) external view responsible override reserve returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon)
+    function callRootInfo(bool includeMetadata) external view responsible override reserve returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata)
     {
-        return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, includeIcon ? _icon : icon);
+        return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);
     }
 
     //========================================
     //
-    function setIcon(uint256 partNum, uint256 partsTotal, bytes data) external onlyOwner reserve returnChange
+    function setMetadata(string metadata) external onlyOwner reserve returnChange
     {
-        if(_icon.length != partsTotal)
-        {
-            delete _icon;
-            _icon = new bytes[](partsTotal);
-        }
-        _icon[partNum] = data;
+        _metadata = metadata;
     }
 
     //========================================
@@ -76,7 +71,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
 
     //========================================
     //
-    function _createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount, uint128 value, uint16 flag) internal returns (address)
+    function _createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount, uint128 value, uint16 flag, bool emitCreateWallet) internal returns (address)
     {
         if(tokensAmount > 0)
         {
@@ -85,6 +80,12 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
         }
         
         (address walletAddress, TvmCell stateInit) = _getWalletInit(ownerAddress);
+        if(emitCreateWallet)
+        {
+            // Event
+            emit walletCreated(ownerAddress, walletAddress);
+        }
+
         new LiquidFTWallet{value: value, flag: flag, bounce: false, stateInit: stateInit, wid: address(this).wid}(addressZero, msg.sender, notifyOnReceiveAddress, tokensAmount);
 
         return walletAddress;
@@ -95,19 +96,13 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     // 
     function createWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external override reserve returns (address)
     {
-        // Event
-        emit walletCreated(ownerAddress, walletAddress);
-
-        address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, 0, 128);
+        address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, 0, 128, true);
         return(walletAddress);
     }
 
     function callCreateWallet(address ownerAddress, address notifyOnReceiveAddress, uint128 tokensAmount) external responsible override reserve returns (address)
     {
-        // Event
-        emit walletCreated(ownerAddress, walletAddress);
-        
-        address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, msg.value / 2, 0);
+        address walletAddress = _createWallet(ownerAddress, notifyOnReceiveAddress, tokensAmount, msg.value / 2, 0, true);
         return{value: 0, flag: 128}(walletAddress);
     }
 
@@ -131,7 +126,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     //
     function mint(uint128 amount, address targetOwnerAddress, address notifyAddress, TvmCell body) external override onlyOwner reserve
     {
-        address walletAddress = _createWallet(targetOwnerAddress, addressZero, 0, msg.value / 3, 0);
+        address walletAddress = _createWallet(targetOwnerAddress, addressZero, 0, msg.value / 3, 0, false);
         // Event
         emit tokensMinted(amount, targetOwnerAddress, body);
 

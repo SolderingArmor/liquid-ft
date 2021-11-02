@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -21,7 +22,7 @@
 		{
 			"name": "callWalletCode",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"cell"}
@@ -39,7 +40,7 @@
 		{
 			"name": "callWalletAddress",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"},
+				{"name":"answerId","type":"uint32"},
 				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
@@ -49,36 +50,34 @@
 		{
 			"name": "getRootInfo",
 			"inputs": [
-				{"name":"includeIcon","type":"bool"}
+				{"name":"includeMetadata","type":"bool"}
 			],
 			"outputs": [
 				{"name":"name","type":"bytes"},
 				{"name":"symbol","type":"bytes"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
-				{"name":"icon","type":"bytes[]"}
+				{"name":"metadata","type":"string"}
 			]
 		},
 		{
 			"name": "callRootInfo",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"},
-				{"name":"includeIcon","type":"bool"}
+				{"name":"answerId","type":"uint32"},
+				{"name":"includeMetadata","type":"bool"}
 			],
 			"outputs": [
 				{"name":"name","type":"bytes"},
 				{"name":"symbol","type":"bytes"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
-				{"name":"icon","type":"bytes[]"}
+				{"name":"metadata","type":"string"}
 			]
 		},
 		{
-			"name": "setIcon",
+			"name": "setMetadata",
 			"inputs": [
-				{"name":"partNum","type":"uint256"},
-				{"name":"partsTotal","type":"uint256"},
-				{"name":"data","type":"bytes"}
+				{"name":"metadata","type":"string"}
 			],
 			"outputs": [
 			]
@@ -97,7 +96,7 @@
 		{
 			"name": "callCreateWallet",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"},
+				{"name":"answerId","type":"uint32"},
 				{"name":"ownerAddress","type":"address"},
 				{"name":"notifyOnReceiveAddress","type":"address"},
 				{"name":"tokensAmount","type":"uint128"}
@@ -138,7 +137,7 @@
 		{
 			"name": "callOwnerAddress",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
@@ -155,7 +154,7 @@
 		{
 			"name": "callChangeOwner",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"},
+				{"name":"answerId","type":"uint32"},
 				{"name":"newOwnerAddress","type":"address"}
 			],
 			"outputs": [
@@ -198,5 +197,18 @@
 			"outputs": [
 			]
 		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_gasReserve","type":"uint128"},
+		{"name":"_ownerAddress","type":"address"},
+		{"name":"_walletCode","type":"cell"},
+		{"name":"_name","type":"bytes"},
+		{"name":"_symbol","type":"bytes"},
+		{"name":"_decimals","type":"uint8"},
+		{"name":"_totalSupply","type":"uint128"},
+		{"name":"_metadata","type":"string"}
 	]
 }

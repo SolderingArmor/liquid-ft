@@ -9,6 +9,14 @@ import "../interfaces/ILiquidFTRoot.sol";
 
 //================================================================================
 //
+struct AllowanceInfo
+{
+    uint128 allowanceAmount; //
+    uint32  allowanceUntil;  // endless when 0;
+}
+
+//================================================================================
+//
 interface ILiquidFTWallet
 {
     //========================================
@@ -19,16 +27,20 @@ interface ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode()             external view             returns (TvmCell); // Wallet code;
-    function callWalletCode()             external view responsible returns (TvmCell); // Wallet code, responsible;
-    function  getOwnerAddress()           external view             returns (address); // Owner address;
-    function callOwnerAddress()           external view responsible returns (address); // Owner address, responsible;
-    function  getRootAddress()            external view             returns (address); // Root address;
-    function callRootAddress()            external view responsible returns (address); // Root address, responsible;
-    function  getBalance()                external view             returns (uint128); // Wallet balance;
-    function callBalance()                external view responsible returns (uint128); // Wallet balance, responsible;
-    function  getNotifyOnReceiveAddress() external view             returns (address); // Notify address;
-    function callNotifyOnReceiveAddress() external view responsible returns (address); // Notify address, responsible;
+    function  getWalletCode()                  external view             returns (TvmCell                          ); // Wallet code;
+    function callWalletCode()                  external view responsible returns (TvmCell                          ); // Wallet code,    responsible;
+    function  getOwnerAddress()                external view             returns (address                          ); // Owner address;
+    function callOwnerAddress()                external view responsible returns (address                          ); // Owner address,  responsible;
+    function  getRootAddress()                 external view             returns (address                          ); // Root address;
+    function callRootAddress()                 external view responsible returns (address                          ); // Root address,   responsible;
+    function  getBalance()                     external view             returns (uint128                          ); // Wallet balance;
+    function callBalance()                     external view responsible returns (uint128                          ); // Wallet balance, responsible;
+    function  getNotifyOnReceiveAddress()      external view             returns (address                          ); // Notify address;
+    function callNotifyOnReceiveAddress()      external view responsible returns (address                          ); // Notify address, responsible;
+    function  getAllowanceList()               external view             returns (mapping(address => AllowanceInfo)); // 
+    function callAllowanceList()               external view responsible returns (mapping(address => AllowanceInfo)); // 
+    function  getAllowanceSingle(address addr) external view             returns (AllowanceInfo                    ); // 
+    function callAllowanceSingle(address addr) external view responsible returns (AllowanceInfo                    ); // 
 
     //========================================
     /// @notice Sends burn command to Root;
@@ -67,6 +79,20 @@ interface ILiquidFTWallet
     /// @param newNotifyOnReceiveAddress - "iFTNotify" contract address to receive a notification (when zero no one is notified);
     //
     function changeNotifyOnReceiveAddress(address newNotifyOnReceiveAddress) external;
+
+    //========================================
+    /// @notice Changes target address allowance. If `amount` == 0 then allowance is deleted;
+    ///
+    /// @param targetAddress - Allowance target address (spender);
+    /// @param amount        - Allowance amount;
+    /// @param until         - Allowance expiration dt in unixtime (0 means endless);
+    //
+    function setAllowance(address targetAddress, uint128 amount, uint32 until) external;
+
+    //========================================
+    /// @notice Deletes all pending allowances. If you want to alter single allowance please use `setAllowance`;
+    //
+    function clearAllowance() external;
 }
 
 //================================================================================

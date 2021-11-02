@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -24,7 +25,7 @@
 		{
 			"name": "callWalletCode",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"cell"}
@@ -41,7 +42,7 @@
 		{
 			"name": "callOwnerAddress",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
@@ -58,7 +59,7 @@
 		{
 			"name": "callRootAddress",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
@@ -75,7 +76,7 @@
 		{
 			"name": "callBalance",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"uint128"}
@@ -92,10 +93,46 @@
 		{
 			"name": "callNotifyOnReceiveAddress",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getAllowanceList",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"map(address,tuple)"}
+			]
+		},
+		{
+			"name": "callAllowanceList",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"map(address,tuple)"}
+			]
+		},
+		{
+			"name": "getAllowanceSingle",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "callAllowanceSingle",
+			"inputs": [
+				{"name":"answerId","type":"uint32"},
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}
 			]
 		},
 		{
@@ -139,6 +176,23 @@
 			],
 			"outputs": [
 			]
+		},
+		{
+			"name": "setAllowance",
+			"inputs": [
+				{"name":"targetAddress","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "clearAllowance",
+			"inputs": [
+			],
+			"outputs": [
+			]
 		}
 	],
 	"data": [
@@ -174,5 +228,16 @@
 			"outputs": [
 			]
 		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_gasReserve","type":"uint128"},
+		{"name":"_rootAddress","type":"address"},
+		{"name":"_ownerAddress","type":"address"},
+		{"name":"_notifyOnReceiveAddress","type":"address"},
+		{"name":"_balance","type":"uint128"},
+		{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"_allowances","type":"map(address,tuple)"}
 	]
 }

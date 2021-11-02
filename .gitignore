@@ -1,0 +1,5 @@
+*__pycache__*
+*.log
+tests/*.json
+contracts/*tvc
+contracts/*.abi.json

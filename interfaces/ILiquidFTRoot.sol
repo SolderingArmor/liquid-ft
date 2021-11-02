@@ -26,8 +26,8 @@ interface ILiquidFTRoot
     function callWalletCode()                        external view responsible returns (TvmCell walletCode);    // Wallet code, responsible;
     function  getWalletAddress(address ownerAddress) external view             returns (address walletAddress); // Arbitratry Wallet address;
     function callWalletAddress(address ownerAddress) external view responsible returns (address walletAddress); // Arbitratry Wallet address, responsible;
-    function  getRootInfo(bool includeIcon)          external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon); // Token information + icon;
-    function callRootInfo(bool includeIcon)          external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, bytes[] icon); // Token information + icon, responsible;
+    function  getRootInfo(bool includeMetadata)      external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata); // Token information + metadata;
+    function callRootInfo(bool includeMetadata)      external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata); // Token information + icon, responsible;
 
     //========================================
     /// @notice Receives burn command from Wallet;
