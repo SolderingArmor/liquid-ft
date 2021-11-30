@@ -20,8 +20,8 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     //========================================
     // Variables
     TvmCell static _walletCode;  //
-    bytes   static _name;        //
-    bytes   static _symbol;      //
+    string  static _name;        //
+    string  static _symbol;      //
     uint8   static _decimals;    //
     uint128        _totalSupply; //
     string         _metadata;    //
@@ -36,11 +36,11 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     function  getWalletAddress(address ownerAddress) external view             override         returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return                      (addr);              }
     function callWalletAddress(address ownerAddress) external view responsible override reserve returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return {value: 0, flag: 128}(addr);              }
 
-    function  getRootInfo(bool includeMetadata) external view override returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata)
+    function  getRootInfo(bool includeMetadata) external view override returns (string name, string symbol, uint8 decimals, uint128 totalSupply, string metadata)
     {
         return (_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);  
     }
-    function callRootInfo(bool includeMetadata) external view responsible override reserve returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata)
+    function callRootInfo(bool includeMetadata) external view responsible override reserve returns (string name, string symbol, uint8 decimals, uint128 totalSupply, string metadata)
     {
         return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);
     }

@@ -53,8 +53,8 @@
 				{"name":"includeMetadata","type":"bool"}
 			],
 			"outputs": [
-				{"name":"name","type":"bytes"},
-				{"name":"symbol","type":"bytes"},
+				{"name":"name","type":"string"},
+				{"name":"symbol","type":"string"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
 				{"name":"metadata","type":"string"}
@@ -67,8 +67,8 @@
 				{"name":"includeMetadata","type":"bool"}
 			],
 			"outputs": [
-				{"name":"name","type":"bytes"},
-				{"name":"symbol","type":"bytes"},
+				{"name":"name","type":"string"},
+				{"name":"symbol","type":"string"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
 				{"name":"metadata","type":"string"}
@@ -164,8 +164,8 @@
 	],
 	"data": [
 		{"key":1,"name":"_walletCode","type":"cell"},
-		{"key":2,"name":"_name","type":"bytes"},
-		{"key":3,"name":"_symbol","type":"bytes"},
+		{"key":2,"name":"_name","type":"string"},
+		{"key":3,"name":"_symbol","type":"string"},
 		{"key":4,"name":"_decimals","type":"uint8"}
 	],
 	"events": [
@@ -205,8 +205,8 @@
 		{"name":"_gasReserve","type":"uint128"},
 		{"name":"_ownerAddress","type":"address"},
 		{"name":"_walletCode","type":"cell"},
-		{"name":"_name","type":"bytes"},
-		{"name":"_symbol","type":"bytes"},
+		{"name":"_name","type":"string"},
+		{"name":"_symbol","type":"string"},
 		{"name":"_decimals","type":"uint8"},
 		{"name":"_totalSupply","type":"uint128"},
 		{"name":"_metadata","type":"string"}
