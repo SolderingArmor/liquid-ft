@@ -1,14 +1,30 @@
-pragma ton-solidity >= 0.47.0;
+pragma ton-solidity >= 0.52.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
 
 //================================================================================
 //
-interface iFTNotify
-{
-    function receiveNotification(uint128 amount, address senderOwnerAddress, address initiatorAddress, TvmCell body) external;
-}
+// Metadata JSON format:
+// name                - Human readable name   of the token; if JSON value and `_name`   fields are different `_name`   field is preferred.
+// symbol              - Human readable symbol of the token; if JSON value and `_symbol` fields are different `_symbol` field is preferred.
+// description         - Human readable description of the token.
+// image               - URL to the image of the token. PNG, GIF and JPG file formats are supported. 
+//                       You may use the ?ext={file_extension} query to provide information on the file type.
+// animation_url       - URL to a multi-media attachment of the token. The supported file formats are MP4 and MOV for video, 
+//                       MP3, FLAC and WAV for audio, GLB for AR/3D assets, and HTML for HTML pages. 
+//                       You may use the ?ext={file_extension} query to provide information on the file type.
+// external_url        - URL to an external application or website where users can also view the token.
+//
+// EXAMPLE:
+//{
+//    "name": "Wrapped DOGE",
+//    "symbol": "WDOGE",
+//    "description": "Yet another wrapped token",
+//    "image": "https://path_to_icon?ext=png",
+//    "animation_url": "https://path_to_doge_clip?ext=mp4",
+//    "external_url": "https://wrapped_token_website"
+//}
 
 //================================================================================
 //
@@ -27,7 +43,7 @@ interface ILiquidFTRoot
     function  getWalletAddress(address ownerAddress) external view             returns (address walletAddress); // Arbitratry Wallet address;
     function callWalletAddress(address ownerAddress) external view responsible returns (address walletAddress); // Arbitratry Wallet address, responsible;
     function  getRootInfo(bool includeMetadata)      external view             returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata); // Token information + metadata;
-    function callRootInfo(bool includeMetadata)      external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata); // Token information + icon, responsible;
+    function callRootInfo(bool includeMetadata)      external view responsible returns (bytes name, bytes symbol, uint8 decimals, uint128 totalSupply, string metadata); // Token information + metadata, responsible;
 
     //========================================
     /// @notice Receives burn command from Wallet;

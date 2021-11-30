@@ -1,6 +1,6 @@
 {
 	"ABI version": 2,
-	"version": "2.1",
+	"version": "2.2",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -15,105 +15,32 @@
 			]
 		},
 		{
-			"name": "getWalletCode",
+			"name": "getInfo",
 			"inputs": [
+				{"name":"includeAllowance","type":"bool"}
 			],
 			"outputs": [
-				{"name":"value0","type":"cell"}
+				{"name":"walletCode","type":"cell"},
+				{"name":"ownerAddress","type":"address"},
+				{"name":"rootAddress","type":"address"},
+				{"name":"balance","type":"uint128"},
+				{"name":"notifyOnReceiveAddress","type":"address"},
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"allowanceList","type":"map(address,tuple)"}
 			]
 		},
 		{
-			"name": "callWalletCode",
+			"name": "callInfo",
 			"inputs": [
-				{"name":"answerId","type":"uint32"}
+				{"name":"answerId","type":"uint32"},
+				{"name":"includeAllowance","type":"bool"}
 			],
 			"outputs": [
-				{"name":"value0","type":"cell"}
-			]
-		},
-		{
-			"name": "getOwnerAddress",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "callOwnerAddress",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getRootAddress",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "callRootAddress",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getBalance",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"uint128"}
-			]
-		},
-		{
-			"name": "callBalance",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"uint128"}
-			]
-		},
-		{
-			"name": "getNotifyOnReceiveAddress",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "callNotifyOnReceiveAddress",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getAllowanceList",
-			"inputs": [
-			],
-			"outputs": [
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"map(address,tuple)"}
-			]
-		},
-		{
-			"name": "callAllowanceList",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"map(address,tuple)"}
+				{"name":"walletCode","type":"cell"},
+				{"name":"ownerAddress","type":"address"},
+				{"name":"rootAddress","type":"address"},
+				{"name":"balance","type":"uint128"},
+				{"name":"notifyOnReceiveAddress","type":"address"},
+				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"allowanceList","type":"map(address,tuple)"}
 			]
 		},
 		{

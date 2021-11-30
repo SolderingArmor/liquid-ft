@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.47.0;
+pragma ton-solidity >= 0.52.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
@@ -36,8 +36,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Modifiers
-    function senderIsOwner()   internal view inline returns (bool) { return (msg.isInternal && msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
-    function senderIsRoot()    internal view inline returns (bool) { return (msg.isInternal && msg.sender.isStdAddrWithoutAnyCast() && _rootAddress  == msg.sender && _rootAddress  != addressZero);    }
+    function senderIsOwner()   internal view inline returns (bool) { return (_checkSenderAddress(_ownerAddress));    }
+    function senderIsRoot()    internal view inline returns (bool) { return (_checkSenderAddress(_rootAddress ));    }
     function senderIsAllowed() internal view inline returns (bool) { return (msg.isInternal && _allowances.exists(msg.sender)) || senderIsOwner();    }
     modifier onlyOwner   {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
     modifier onlyRoot    {    require(senderIsRoot(),  ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT);     _;    }
@@ -45,20 +45,41 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode()                  external view override                     returns (TvmCell                          ) {    return                      (tvm.code());               }
-    function callWalletCode()                  external view override responsible reserve returns (TvmCell                          ) {    return {value: 0, flag: 128}(tvm.code());               }
-    function  getOwnerAddress()                external view override                     returns (address                          ) {    return                      (_ownerAddress);            }
-    function callOwnerAddress()                external view override responsible reserve returns (address                          ) {    return {value: 0, flag: 128}(_ownerAddress);            }
-    function  getRootAddress()                 external view override                     returns (address                          ) {    return                      (_rootAddress);             }
-    function callRootAddress()                 external view override responsible reserve returns (address                          ) {    return {value: 0, flag: 128}(_rootAddress);             }
-    function  getBalance()                     external view override                     returns (uint128                          ) {    return                      (_balance);                 }
-    function callBalance()                     external view override responsible reserve returns (uint128                          ) {    return {value: 0, flag: 128}(_balance);                 }
-    function  getNotifyOnReceiveAddress()      external view override                     returns (address                          ) {    return                      (_notifyOnReceiveAddress);  }
-    function callNotifyOnReceiveAddress()      external view override responsible reserve returns (address                          ) {    return {value: 0, flag: 128}(_notifyOnReceiveAddress);  }
-    function  getAllowanceList()               external view override                     returns (mapping(address => AllowanceInfo)) {    return                      (_allowances);              }
-    function callAllowanceList()               external view override responsible reserve returns (mapping(address => AllowanceInfo)) {    return {value: 0, flag: 128}(_allowances);              }
-    function  getAllowanceSingle(address addr) external view override                     returns (AllowanceInfo                    ) {    return                      (_allowances[addr]);        }
-    function callAllowanceSingle(address addr) external view override responsible reserve returns (AllowanceInfo                    ) {    return {value: 0, flag: 128}(_allowances[addr]);        }
+    function getInfo(bool includeAllowance) external view override returns(TvmCell walletCode,
+                                                                           address ownerAddress,
+                                                                           address rootAddress,
+                                                                           uint128 balance,
+                                                                           address notifyOnReceiveAddress,
+                                                                           mapping(address => AllowanceInfo)
+                                                                                   allowanceList)
+    {
+        mapping(address => AllowanceInfo) empty;
+        return (tvm.code(), 
+                _ownerAddress, 
+                _rootAddress, 
+                _balance, 
+                _notifyOnReceiveAddress, 
+                (includeAllowance ? _allowances : empty));
+    }
+
+    function callInfo(bool includeAllowance) external view override responsible reserve returns(TvmCell walletCode,
+                                                                                                address ownerAddress,
+                                                                                                address rootAddress,
+                                                                                                uint128 balance,
+                                                                                                address notifyOnReceiveAddress,
+                                                                                                mapping(address => AllowanceInfo)
+                                                                                                        allowanceList)
+    {
+        mapping(address => AllowanceInfo) empty;
+        return{value: 0, flag: 128}(tvm.code(), 
+                                    _ownerAddress, 
+                                    _rootAddress, 
+                                    _balance, 
+                                    _notifyOnReceiveAddress, 
+                                    (includeAllowance ? _allowances : empty));
+    }
+    function  getAllowanceSingle(address addr) external view override                     returns (AllowanceInfo) {    return                      (_allowances[addr]);    }
+    function callAllowanceSingle(address addr) external view override responsible reserve returns (AllowanceInfo) {    return {value: 0, flag: 128}(_allowances[addr]);    }
 
     //========================================
     //
@@ -120,7 +141,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         if(isAllowance)
         {
             require(_allowances[msg.sender].allowanceUntil == 0 || 
-                    _allowances[msg.sender].allowanceUntil >= now,     ERROR_ALLOWANCE_EXPIRED     );
+                    _allowances[msg.sender].allowanceUntil  >= now,    ERROR_ALLOWANCE_EXPIRED     );
             require(_allowances[msg.sender].allowanceAmount >= amount, ERROR_INSUFFICIENT_ALLOWANCE);
         }
 

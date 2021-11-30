@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.47.0;
+pragma ton-solidity >= 0.52.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
@@ -6,6 +6,13 @@ pragma AbiHeader expire;
 //================================================================================
 //
 import "../interfaces/ILiquidFTRoot.sol";
+
+//================================================================================
+//
+interface iFTNotify
+{
+    function receiveNotification(uint128 amount, address senderOwnerAddress, address initiatorAddress, TvmCell body) external;
+}
 
 //================================================================================
 //
@@ -27,20 +34,23 @@ interface ILiquidFTWallet
 
     //========================================
     // Getters
-    function  getWalletCode()                  external view             returns (TvmCell                          ); // Wallet code;
-    function callWalletCode()                  external view responsible returns (TvmCell                          ); // Wallet code,    responsible;
-    function  getOwnerAddress()                external view             returns (address                          ); // Owner address;
-    function callOwnerAddress()                external view responsible returns (address                          ); // Owner address,  responsible;
-    function  getRootAddress()                 external view             returns (address                          ); // Root address;
-    function callRootAddress()                 external view responsible returns (address                          ); // Root address,   responsible;
-    function  getBalance()                     external view             returns (uint128                          ); // Wallet balance;
-    function callBalance()                     external view responsible returns (uint128                          ); // Wallet balance, responsible;
-    function  getNotifyOnReceiveAddress()      external view             returns (address                          ); // Notify address;
-    function callNotifyOnReceiveAddress()      external view responsible returns (address                          ); // Notify address, responsible;
-    function  getAllowanceList()               external view             returns (mapping(address => AllowanceInfo)); // 
-    function callAllowanceList()               external view responsible returns (mapping(address => AllowanceInfo)); // 
-    function  getAllowanceSingle(address addr) external view             returns (AllowanceInfo                    ); // 
-    function callAllowanceSingle(address addr) external view responsible returns (AllowanceInfo                    ); // 
+    function getInfo(bool includeAllowance) external view returns(TvmCell walletCode,
+                                                                  address ownerAddress,
+                                                                  address rootAddress,
+                                                                  uint128 balance,
+                                                                  address notifyOnReceiveAddress,
+                                                                  mapping(address => AllowanceInfo)
+                                                                          allowanceList);
+
+    function callInfo(bool includeAllowance) external view responsible returns(TvmCell walletCode,
+                                                                               address ownerAddress,
+                                                                               address rootAddress,
+                                                                               uint128 balance,
+                                                                               address notifyOnReceiveAddress,
+                                                                               mapping(address => AllowanceInfo)
+                                                                                       allowanceList);
+    function  getAllowanceSingle(address addr) external view             returns (AllowanceInfo); // 
+    function callAllowanceSingle(address addr) external view responsible returns (AllowanceInfo); // 
 
     //========================================
     /// @notice Sends burn command to Root;
