@@ -24,8 +24,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     bytes   static _symbol;      //
     uint8   static _decimals;    //
     uint128        _totalSupply; //
-    string         _metadata;    // utf8-string with encoded PNG image, in chunks (concatenate all chunks to get the media). The string format is "data:image/png;base64,<image>", where image - image bytes encoded in base64.
-                                 // _icon = "data:image/png;base64,iVBORw0KG...5CYII=";
+    string         _metadata;    //
 
     //========================================
     // Modifiers
