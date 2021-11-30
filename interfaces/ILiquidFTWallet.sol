@@ -49,8 +49,8 @@ interface ILiquidFTWallet
                                                                                address notifyOnReceiveAddress,
                                                                                mapping(address => AllowanceInfo)
                                                                                        allowanceList);
-    function  getAllowanceSingle(address addr) external view             returns (AllowanceInfo); // 
-    function callAllowanceSingle(address addr) external view responsible returns (AllowanceInfo); // 
+    function  getAllowanceSingle(address allowanceAddress) external view             returns (AllowanceInfo); // 
+    function callAllowanceSingle(address allowanceAddress) external view responsible returns (AllowanceInfo); // 
 
     //========================================
     /// @notice Sends burn command to Root;

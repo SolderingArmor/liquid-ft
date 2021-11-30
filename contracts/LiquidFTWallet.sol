@@ -78,8 +78,8 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
                                     _notifyOnReceiveAddress, 
                                     (includeAllowance ? _allowances : empty));
     }
-    function  getAllowanceSingle(address addr) external view override                     returns (AllowanceInfo) {    return                      (_allowances[addr]);    }
-    function callAllowanceSingle(address addr) external view override responsible reserve returns (AllowanceInfo) {    return {value: 0, flag: 128}(_allowances[addr]);    }
+    function  getAllowanceSingle(address allowanceAddress) external view override                     returns (AllowanceInfo) {    return                      (_allowances[allowanceAddress]);    }
+    function callAllowanceSingle(address allowanceAddress) external view override responsible reserve returns (AllowanceInfo) {    return {value: 0, flag: 128}(_allowances[allowanceAddress]);    }
 
     //========================================
     //

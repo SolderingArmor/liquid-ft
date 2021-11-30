@@ -46,7 +46,7 @@
 		{
 			"name": "getAllowanceSingle",
 			"inputs": [
-				{"name":"addr","type":"address"}
+				{"name":"allowanceAddress","type":"address"}
 			],
 			"outputs": [
 				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}
@@ -56,7 +56,7 @@
 			"name": "callAllowanceSingle",
 			"inputs": [
 				{"name":"answerId","type":"uint32"},
-				{"name":"addr","type":"address"}
+				{"name":"allowanceAddress","type":"address"}
 			],
 			"outputs": [
 				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}

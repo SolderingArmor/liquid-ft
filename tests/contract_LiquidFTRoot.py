@@ -10,7 +10,7 @@ class LiquidFTRoot(BaseContract):
     def __init__(self, tonClient: TonClient, name: str, symbol: str, decimals: int, signer: Signer = None):
         genSigner = generateSigner() if signer is None else signer
         self.CONSTRUCTOR = {}
-        self.INITDATA    = {"name":name, "symbol":symbol, "decimals":decimals}
+        self.INITDATA    = {"_name":name, "_symbol":symbol, "_decimals":decimals}
         BaseContract.__init__(self, tonClient=tonClient, contractName="LiquidFTRoot", pubkey=ZERO_PUBKEY, signer=genSigner)
 
     #========================================
