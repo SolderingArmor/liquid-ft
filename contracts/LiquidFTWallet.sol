@@ -38,23 +38,24 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     // Modifiers
     function senderIsOwner()   internal view inline returns (bool) { return (_checkSenderAddress(_ownerAddress));    }
     function senderIsRoot()    internal view inline returns (bool) { return (_checkSenderAddress(_rootAddress ));    }
-    function senderIsAllowed() internal view inline returns (bool) { return (msg.isInternal && _allowances.exists(msg.sender)) || senderIsOwner();    }
-    modifier onlyOwner   {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
-    modifier onlyRoot    {    require(senderIsRoot(),  ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT);     _;    }
-    modifier onlyAllowed {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_ALLOWED);     _;    }
+    function senderIsAllowed() internal view inline returns (bool) { return senderIsOwner() || (msg.isInternal && _allowances.exists(msg.sender));    }
+    modifier onlyOwner   {    require(senderIsOwner(),   ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
+    modifier onlyRoot    {    require(senderIsRoot(),    ERROR_MESSAGE_SENDER_IS_NOT_MY_ROOT);     _;    }
+    modifier onlyAllowed {    require(senderIsAllowed(), ERROR_MESSAGE_SENDER_IS_NOT_ALLOWED);     _;    }
 
     //========================================
     // Getters
-    function getInfo(bool includeAllowance) external view override returns(TvmCell walletCode,
-                                                                           address ownerAddress,
-                                                                           address rootAddress,
-                                                                           uint128 balance,
-                                                                           address notifyOnReceiveAddress,
-                                                                           mapping(address => AllowanceInfo)
-                                                                                   allowanceList)
+    function getInfo(bool includeAllowance, bool includeWalletCode) external view override returns(TvmCell walletCode,
+                                                                                                    address ownerAddress,
+                                                                                                    address rootAddress,
+                                                                                                    uint128 balance,
+                                                                                                     address notifyOnReceiveAddress,
+                                                                                                     mapping(address => AllowanceInfo)
+                                                                                                             allowanceList)
     {
         mapping(address => AllowanceInfo) empty;
-        return (tvm.code(), 
+        TvmCell emptyCell;
+        return (includeWalletCode ? tvm.code() : emptyCell, 
                 _ownerAddress, 
                 _rootAddress, 
                 _balance, 
@@ -62,16 +63,17 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
                 (includeAllowance ? _allowances : empty));
     }
 
-    function callInfo(bool includeAllowance) external view override responsible reserve returns(TvmCell walletCode,
-                                                                                                address ownerAddress,
-                                                                                                address rootAddress,
-                                                                                                uint128 balance,
-                                                                                                address notifyOnReceiveAddress,
-                                                                                                mapping(address => AllowanceInfo)
-                                                                                                        allowanceList)
+    function callInfo(bool includeAllowance, bool includeWalletCode) external view override responsible reserve returns(TvmCell walletCode,
+                                                                                                                        address ownerAddress,
+                                                                                                                        address rootAddress,
+                                                                                                                        uint128 balance,
+                                                                                                                        address notifyOnReceiveAddress,
+                                                                                                                        mapping(address => AllowanceInfo)
+                                                                                                                                allowanceList)
     {
         mapping(address => AllowanceInfo) empty;
-        return{value: 0, flag: 128}(tvm.code(), 
+        TvmCell emptyCell;
+        return{value: 0, flag: 128}(includeWalletCode ? tvm.code() : emptyCell, 
                                     _ownerAddress, 
                                     _rootAddress, 
                                     _balance, 
@@ -99,7 +101,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    constructor(address senderOwnerAddress, address initiatorAddress, address notifyOnReceiveAddress, uint128 tokensAmount) public
+    constructor(address senderOwnerAddress, address initiatorAddress, address notifyOnReceiveAddress, uint128 tokensAmount) public returnChangeTo(initiatorAddress)
     {
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
         require(walletAddress == msg.sender || _rootAddress == msg.sender, ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
@@ -111,8 +113,6 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         _reserve();
         _balance                = tokensAmount;
         _notifyOnReceiveAddress = notifyOnReceiveAddress;
-
-        initiatorAddress.transfer(0, true, 128);
     }
 
     //========================================
@@ -133,7 +133,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
     //
     function transfer(uint128 amount, address targetOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) public override onlyAllowed reserve
     {
-        require(_balance >= amount,                  ERROR_NOT_ENOUGH_BALANCE);
+        require(_balance >= amount,                  ERROR_NOT_ENOUGH_BALANCE          );
         require(targetOwnerAddress != _ownerAddress, ERROR_CAN_NOT_TRANSFER_TO_YOURSELF);
 
         // Check allowance
@@ -172,7 +172,7 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
 
     //========================================
     //
-    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) public override
+    function receiveTransfer(uint128 amount, address senderOwnerAddress, address initiatorAddress, address notifyAddress, bool allowReceiverNotify, TvmCell body) public override reserve returnChangeTo(initiatorAddress) 
     {
         (address walletAddress, ) = calculateFutureWalletAddress(senderOwnerAddress);
         require(msg.isInternal && (walletAddress == msg.sender || _rootAddress == msg.sender), ERROR_MESSAGE_SENDER_IS_NOT_WALLET_OR_ROOT);
@@ -194,9 +194,6 @@ contract LiquidFTWallet is IBase, ILiquidFTWallet
         {
             iFTNotify(_notifyOnReceiveAddress).receiveNotification{value: msg.value / 3, flag: 0}(amount, senderOwnerAddress, initiatorAddress, body);
         }
-
-        // Return the change to initiator
-        initiatorAddress.transfer(0, true, 128);
     }
 
     //========================================

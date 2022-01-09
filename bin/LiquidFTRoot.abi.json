@@ -48,7 +48,7 @@
 			]
 		},
 		{
-			"name": "getRootInfo",
+			"name": "getInfo",
 			"inputs": [
 				{"name":"includeMetadata","type":"bool"}
 			],
@@ -61,7 +61,7 @@
 			]
 		},
 		{
-			"name": "callRootInfo",
+			"name": "callInfo",
 			"inputs": [
 				{"name":"answerId","type":"uint32"},
 				{"name":"includeMetadata","type":"bool"}

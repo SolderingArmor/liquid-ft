@@ -17,7 +17,8 @@
 		{
 			"name": "getInfo",
 			"inputs": [
-				{"name":"includeAllowance","type":"bool"}
+				{"name":"includeAllowance","type":"bool"},
+				{"name":"includeWalletCode","type":"bool"}
 			],
 			"outputs": [
 				{"name":"walletCode","type":"cell"},
@@ -32,7 +33,8 @@
 			"name": "callInfo",
 			"inputs": [
 				{"name":"answerId","type":"uint32"},
-				{"name":"includeAllowance","type":"bool"}
+				{"name":"includeAllowance","type":"bool"},
+				{"name":"includeWalletCode","type":"bool"}
 			],
 			"outputs": [
 				{"name":"walletCode","type":"cell"},

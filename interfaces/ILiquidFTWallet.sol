@@ -34,21 +34,21 @@ interface ILiquidFTWallet
 
     //========================================
     // Getters
-    function getInfo(bool includeAllowance) external view returns(TvmCell walletCode,
-                                                                  address ownerAddress,
-                                                                  address rootAddress,
-                                                                  uint128 balance,
-                                                                  address notifyOnReceiveAddress,
-                                                                  mapping(address => AllowanceInfo)
-                                                                          allowanceList);
+    function getInfo(bool includeAllowance, bool includeWalletCode) external view returns(TvmCell walletCode,
+                                                                                          address ownerAddress,
+                                                                                          address rootAddress,
+                                                                                          uint128 balance,
+                                                                                          address notifyOnReceiveAddress,
+                                                                                          mapping(address => AllowanceInfo)
+                                                                                                  allowanceList);
 
-    function callInfo(bool includeAllowance) external view responsible returns(TvmCell walletCode,
-                                                                               address ownerAddress,
-                                                                               address rootAddress,
-                                                                               uint128 balance,
-                                                                               address notifyOnReceiveAddress,
-                                                                               mapping(address => AllowanceInfo)
-                                                                                       allowanceList);
+    function callInfo(bool includeAllowance, bool includeWalletCode) external view responsible returns(TvmCell walletCode,
+                                                                                                       address ownerAddress,
+                                                                                                       address rootAddress,
+                                                                                                       uint128 balance,
+                                                                                                       address notifyOnReceiveAddress,
+                                                                                                       mapping(address => AllowanceInfo)
+                                                                                                               allowanceList);
     function  getAllowanceSingle(address allowanceAddress) external view             returns (AllowanceInfo); // 
     function callAllowanceSingle(address allowanceAddress) external view responsible returns (AllowanceInfo); // 
 

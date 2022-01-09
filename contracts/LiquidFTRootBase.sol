@@ -36,13 +36,29 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
     function  getWalletAddress(address ownerAddress) external view             override         returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return                      (addr);              }
     function callWalletAddress(address ownerAddress) external view responsible override reserve returns (address)         {    (address addr, ) = _getWalletInit(ownerAddress);    return {value: 0, flag: 128}(addr);              }
 
-    function  getRootInfo(bool includeMetadata) external view override returns (string name, string symbol, uint8 decimals, uint128 totalSupply, string metadata)
+    function getInfo(bool includeMetadata) external view override returns (string  name, 
+                                                                           string  symbol, 
+                                                                           uint8   decimals, 
+                                                                           uint128 totalSupply, 
+                                                                           string  metadata)
     {
-        return (_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);  
+        return (_name, 
+                _symbol, 
+                _decimals, 
+                _totalSupply, 
+                includeMetadata ? _metadata : metadata);  
     }
-    function callRootInfo(bool includeMetadata) external view responsible override reserve returns (string name, string symbol, uint8 decimals, uint128 totalSupply, string metadata)
+    function callInfo(bool includeMetadata) external view responsible override reserve returns (string  name, 
+                                                                                                string  symbol, 
+                                                                                                uint8   decimals, 
+                                                                                                uint128 totalSupply, 
+                                                                                                string  metadata)
     {
-        return {value: 0, flag: 128}(_name, _symbol, _decimals, _totalSupply, includeMetadata ? _metadata : metadata);
+        return {value: 0, flag: 128}(_name, 
+                                     _symbol, 
+                                     _decimals, 
+                                     _totalSupply, 
+                                     includeMetadata ? _metadata : metadata);
     }
 
     //========================================
@@ -107,7 +123,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
 
     //========================================
     //
-    function burn(uint128 amount, address senderOwnerAddress, address initiatorAddress) external override reserve
+    function burn(uint128 amount, address senderOwnerAddress, address initiatorAddress) external override reserve returnChangeTo(initiatorAddress)
     {
         (address walletAddress, ) = _getWalletInit(senderOwnerAddress);
         require(walletAddress == msg.sender, ERROR_WALLET_ADDRESS_INVALID);
@@ -116,9 +132,6 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
 
         // Event
         emit tokensBurned(amount, senderOwnerAddress);
-
-        // Return the change
-        initiatorAddress.transfer(0, true, 128);
     }
 
     //========================================
@@ -141,7 +154,7 @@ abstract contract LiquidFTRootBase is IOwnable, ILiquidFTRoot
 
     //========================================
     //
-    onBounce(TvmSlice slice) external 
+    onBounce(TvmSlice slice) external
     {
         uint32 functionId = slice.decode(uint32);
         if (functionId == tvm.functionId(LiquidFTWallet.receiveTransfer)) 

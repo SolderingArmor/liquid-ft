@@ -4,11 +4,11 @@
 # 
 import base64
 import time
-from tonclient.client import *
-from tonclient.types  import *
 import ast
-from datetime import datetime
-from pprint import pprint
+from   tonclient.client import *
+from   tonclient.types  import *
+from   datetime import datetime
+from   pprint import pprint
 
 # ==============================================================================
 # 
@@ -18,7 +18,7 @@ EVER          = 1000000000
 DIME          =  100000000
 MSIG_GIVER    = ""
 USE_GIVER     = True
-THROW         = False
+THROW         = True
 
 # ==============================================================================
 # 
@@ -57,6 +57,8 @@ def getNowTimestamp():
 
 # ==============================================================================
 #
+emptyException = {"errorCode":0, "errorMessage":"", "transactionID": "", "errorDesc": ""}
+
 def getValuesFromException(tonException: TonException):
     
     result = tonException.client_error.data
@@ -161,13 +163,13 @@ def deployContract(tonClient: TonClient, abiPath, tvcPath, constructorInput, ini
         waitParams    = ParamsOfWaitForTransaction(message=encoded.message, shard_block_id=messageResult.shard_block_id, send_events=False, abi=abi)
         result        = tonClient.processing.wait_for_transaction(params=waitParams)
 
-        return (result, {"errorCode":0, "errorMessage":"", "transactionID": "", "errorDesc": ""})
+        return {"result": result, "exception": emptyException}
 
     except TonException as ton:
         if THROW:
             raise ton
         exceptionDetails = getValuesFromException(ton)
-        return ({}, exceptionDetails)
+        return {"result": {}, "exception": exceptionDetails}
 
 # ==============================================================================
 #
@@ -220,13 +222,15 @@ def callFunction(tonClient: TonClient, abiPath, contractAddress, functionName, f
         else:
             result = ""
 
-        return (result, {"errorCode":0, "errorMessage":"", "transactionID": "", "errorDesc": ""})
+        #return (result, emptyException)
+        return {"result": result, "exception": emptyException}
 
     except TonException as ton:
         if THROW:
             raise ton
         exceptionDetails = getValuesFromException(ton)
-        return ({}, exceptionDetails)
+        #return ({}, exceptionDetails)
+        return {"result": {}, "exception": exceptionDetails}
 
 # ==============================================================================
 #
@@ -393,14 +397,22 @@ class BaseContract(object):
         result = runFunction(tonClient=self.TONCLIENT, abiPath=self.ABI, contractAddress=self.ADDRESS, functionName=functionName, functionParams=functionParams)
         return result
 
-    def _callFromMultisig(self, msig, functionName, functionParams, value, flags):
+    def _callFromMultisig(self, msig, functionName, functionParams, value, flags, bounce=True):
         messageBoc = prepareMessageBoc(abiPath=self.ABI, functionName=functionName, functionParams=functionParams)
-        result     = msig.sendTransaction(addressDest=self.ADDRESS, value=value, payload=messageBoc, flags=flags)
+        result     = msig.sendTransaction(addressDest=self.ADDRESS, value=value, bounce=bounce, payload=messageBoc, flags=flags)
         return result
 
     def getBalance(self):
         result = getAccountGraphQL(tonClient=self.TONCLIENT, accountID=self.ADDRESS, fields="balance(format:DEC)")
-        return int(result["balance"])
+        return int(result["balance"]) if result != "" else 0
+
+    # 0 – uninit
+    # 1 – active
+    # 2 – frozen
+    # 3 – nonExist
+    def getAccType(self):
+        result = getAccountGraphQL(tonClient=self.TONCLIENT, accountID=self.ADDRESS, fields="acc_type")
+        return int(result["acc_type"]) if result != "" else 0
 
 # ==============================================================================
 #
@@ -411,8 +423,8 @@ class Multisig(BaseContract):
         BaseContract.__init__(self, tonClient=tonClient, contractName="SetcodeMultisigWallet", pubkey=msigSigner.keys.public, signer=msigSigner)
         self.CONSTRUCTOR = {"owners":["0x" + self.SIGNER.keys.public],"reqConfirms":"1"}
 
-    def sendTransaction(self, addressDest, value, payload, flags):
-        result = self._call(functionName="sendTransaction", functionParams={"dest":addressDest, "value":value, "bounce":False, "flags":flags, "payload":payload}, signer=self.SIGNER)
+    def sendTransaction(self, addressDest, value, bounce = False, payload = "", flags = 1):
+        result = self._call(functionName="sendTransaction", functionParams={"dest":addressDest, "value":value, "bounce":bounce, "flags":flags, "payload":payload}, signer=self.SIGNER)
         return result
 
 # ==============================================================================
