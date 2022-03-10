@@ -12,72 +12,52 @@
 			]
 		},
 		{
-			"name": "getWalletCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"cell"}
-			]
-		},
-		{
-			"name": "callWalletCode",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"cell"}
-			]
-		},
-		{
 			"name": "getWalletAddress",
-			"inputs": [
-				{"name":"ownerAddress","type":"address"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "callWalletAddress",
 			"inputs": [
 				{"name":"answerId","type":"uint32"},
 				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
-				{"name":"value0","type":"address"}
+				{"name":"targetOwnerAddress","type":"address"},
+				{"name":"walletAddress","type":"address"}
 			]
 		},
 		{
 			"name": "getInfo",
 			"inputs": [
-				{"name":"includeMetadata","type":"bool"}
+				{"name":"answerId","type":"uint32"},
+				{"name":"includeMetadata","type":"bool"},
+				{"name":"includeWalletCode","type":"bool"}
 			],
 			"outputs": [
 				{"name":"name","type":"string"},
 				{"name":"symbol","type":"string"},
 				{"name":"decimals","type":"uint8"},
 				{"name":"totalSupply","type":"uint128"},
-				{"name":"metadata","type":"string"}
+				{"name":"metadata","type":"string"},
+				{"name":"walletCode","type":"cell"}
 			]
 		},
 		{
-			"name": "callInfo",
+			"name": "setOwner",
 			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"includeMetadata","type":"bool"}
+				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
-				{"name":"name","type":"string"},
-				{"name":"symbol","type":"string"},
-				{"name":"decimals","type":"uint8"},
-				{"name":"totalSupply","type":"uint128"},
-				{"name":"metadata","type":"string"}
 			]
 		},
 		{
 			"name": "setMetadata",
 			"inputs": [
 				{"name":"metadata","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setPreviousRoot",
+			"inputs": [
+				{"name":"previousRoot","type":"address"}
 			],
 			"outputs": [
 			]
@@ -94,19 +74,18 @@
 			]
 		},
 		{
-			"name": "callCreateWallet",
+			"name": "burn",
 			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"ownerAddress","type":"address"},
-				{"name":"notifyOnReceiveAddress","type":"address"},
-				{"name":"tokensAmount","type":"uint128"}
+				{"name":"amount","type":"uint128"},
+				{"name":"senderOwnerAddress","type":"address"},
+				{"name":"initiatorAddress","type":"address"},
+				{"name":"notifyOnReceiveAddress","type":"address"}
 			],
 			"outputs": [
-				{"name":"value0","type":"address"}
 			]
 		},
 		{
-			"name": "burn",
+			"name": "receiveBurnFromRoot",
 			"inputs": [
 				{"name":"amount","type":"uint128"},
 				{"name":"senderOwnerAddress","type":"address"},
@@ -124,41 +103,6 @@
 				{"name":"body","type":"cell"}
 			],
 			"outputs": [
-			]
-		},
-		{
-			"name": "getOwnerAddress",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "callOwnerAddress",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "changeOwner",
-			"inputs": [
-				{"name":"newOwnerAddress","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "callChangeOwner",
-			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"newOwnerAddress","type":"address"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
 			]
 		}
 	],
@@ -203,12 +147,14 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"_gasReserve","type":"uint128"},
-		{"name":"_ownerAddress","type":"address"},
 		{"name":"_walletCode","type":"cell"},
 		{"name":"_name","type":"string"},
 		{"name":"_symbol","type":"string"},
 		{"name":"_decimals","type":"uint8"},
+		{"name":"_ownerAddress","type":"address"},
 		{"name":"_totalSupply","type":"uint128"},
-		{"name":"_metadata","type":"string"}
+		{"name":"_metadata","type":"string"},
+		{"name":"_previousRoot","type":"address"},
+		{"name":"_amountForWalletDeploy","type":"uint128"}
 	]
 }

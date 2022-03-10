@@ -1,4 +1,4 @@
-pragma ton-solidity >= 0.52.0;
+pragma ton-solidity >= 0.55.0;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 pragma AbiHeader expire;
@@ -21,7 +21,7 @@ abstract contract IOwnable is IBase
 
     //========================================
     // Modifiers
-    function senderIsOwner() internal view inline returns (bool) { return (msg.isInternal && msg.sender.isStdAddrWithoutAnyCast() && _ownerAddress == msg.sender && _ownerAddress != addressZero);    }
+    function senderIsOwner() internal view inline returns (bool) { return _checkSenderAddress(_ownerAddress);    }
     modifier onlyOwner {    require(senderIsOwner(), ERROR_MESSAGE_SENDER_IS_NOT_MY_OWNER);    _;    }
 
     //========================================

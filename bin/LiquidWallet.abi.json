@@ -17,7 +17,7 @@
 		{
 			"name": "getInfo",
 			"inputs": [
-				{"name":"includeAllowance","type":"bool"},
+				{"name":"answerId","type":"uint32"},
 				{"name":"includeWalletCode","type":"bool"}
 			],
 			"outputs": [
@@ -25,49 +25,14 @@
 				{"name":"ownerAddress","type":"address"},
 				{"name":"rootAddress","type":"address"},
 				{"name":"balance","type":"uint128"},
-				{"name":"notifyOnReceiveAddress","type":"address"},
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"allowanceList","type":"map(address,tuple)"}
-			]
-		},
-		{
-			"name": "callInfo",
-			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"includeAllowance","type":"bool"},
-				{"name":"includeWalletCode","type":"bool"}
-			],
-			"outputs": [
-				{"name":"walletCode","type":"cell"},
-				{"name":"ownerAddress","type":"address"},
-				{"name":"rootAddress","type":"address"},
-				{"name":"balance","type":"uint128"},
-				{"name":"notifyOnReceiveAddress","type":"address"},
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"allowanceList","type":"map(address,tuple)"}
-			]
-		},
-		{
-			"name": "getAllowanceSingle",
-			"inputs": [
-				{"name":"allowanceAddress","type":"address"}
-			],
-			"outputs": [
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}
-			]
-		},
-		{
-			"name": "callAllowanceSingle",
-			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"allowanceAddress","type":"address"}
-			],
-			"outputs": [
-				{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"value0","type":"tuple"}
+				{"name":"notifyOnReceiveAddress","type":"address"}
 			]
 		},
 		{
 			"name": "burn",
 			"inputs": [
-				{"name":"amount","type":"uint128"}
+				{"name":"amount","type":"uint128"},
+				{"name":"notifyOnReceiveAddress","type":"address"}
 			],
 			"outputs": [
 			]
@@ -105,23 +70,6 @@
 			],
 			"outputs": [
 			]
-		},
-		{
-			"name": "setAllowance",
-			"inputs": [
-				{"name":"targetAddress","type":"address"},
-				{"name":"amount","type":"uint128"},
-				{"name":"until","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "clearAllowance",
-			"inputs": [
-			],
-			"outputs": [
-			]
 		}
 	],
 	"data": [
@@ -142,6 +90,9 @@
 			"inputs": [
 				{"name":"amount","type":"uint128"},
 				{"name":"targetOwnerAddress","type":"address"},
+				{"name":"initiatorAddress","type":"address"},
+				{"name":"notifyAddress","type":"address"},
+				{"name":"allowReceiverNotify","type":"bool"},
 				{"name":"body","type":"cell"}
 			],
 			"outputs": [
@@ -152,6 +103,9 @@
 			"inputs": [
 				{"name":"amount","type":"uint128"},
 				{"name":"senderOwnerAddress","type":"address"},
+				{"name":"initiatorAddress","type":"address"},
+				{"name":"notifyAddress","type":"address"},
+				{"name":"allowReceiverNotify","type":"bool"},
 				{"name":"body","type":"cell"}
 			],
 			"outputs": [
@@ -167,6 +121,6 @@
 		{"name":"_ownerAddress","type":"address"},
 		{"name":"_notifyOnReceiveAddress","type":"address"},
 		{"name":"_balance","type":"uint128"},
-		{"components":[{"name":"allowanceAmount","type":"uint128"},{"name":"allowanceUntil","type":"uint32"}],"name":"_allowances","type":"map(address,tuple)"}
+		{"name":"_amountForWalletDeploy","type":"uint128"}
 	]
 }

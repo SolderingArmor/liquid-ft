@@ -13,8 +13,8 @@ import os
 import random
 from   pathlib import Path
 from   pprint import pprint
-from   contract_LiquidFTWallet import LiquidFTWallet
-from   contract_LiquidFTRoot   import LiquidFTRoot
+from   contract_LiquidWallet import LiquidWallet
+from   contract_LiquidRoot   import LiquidRoot
 
 SERVER_ADDRESS = "https://net.ton.dev"
 
@@ -57,15 +57,15 @@ def _getAbiArray():
             files.append(os.path.join("../bin", file))
     return files
 
-def _unwrapMessages(result):
-    return unwrapMessages(getClient(), result["result"].transaction["out_msgs"], _getAbiArray())
+def _unwrapMessages(result, everClient: TonClient):
+    return unwrapMessages(everClient, result["result"].transaction["out_msgs"], _getAbiArray())
 
 def _unwrapMessagesAndPrint(result):
-    msgs = _unwrapMessages(result)
+    msgs = _unwrapMessages(result, getClient())
     pprint(msgs)
 
-def _getExitCode(msgIdArray):
-    msgArray     = unwrapMessages(getClient(), msgIdArray, _getAbiArray())
+def _getExitCode(msgIdArray, everClient: TonClient):
+    msgArray     = unwrapMessages(everClient, msgIdArray, _getAbiArray())
     if msgArray != "":
         realExitCode = msgArray[0]["TX_DETAILS"]["compute"]["exit_code"]
     else:
@@ -77,49 +77,36 @@ def _getExitCode(msgIdArray):
 print("DEPLOYING CONTRACTS...")
 
 # MSIGS
-msigRoot = Multisig(tonClient=getClient())
-msigW1   = Multisig(tonClient=getClient())
-msigW2   = Multisig(tonClient=getClient())
-msigW3   = Multisig(tonClient=getClient())
+msigRoot1 = Multisig(everClient=getClient())
+msigRoot2 = Multisig(everClient=getClient())
+msigW1    = Multisig(everClient=getClient())
+msigW2    = Multisig(everClient=getClient())
+msigW3    = Multisig(everClient=getClient())
 
-giverGive(getClient(), msigRoot.ADDRESS, EVER * 3)
-giverGive(getClient(), msigW1.ADDRESS,   EVER * 3)
-giverGive(getClient(), msigW2.ADDRESS,   EVER * 3)
-giverGive(getClient(), msigW3.ADDRESS,   EVER * 3)
+giverGive(getClient(), msigRoot1.ADDRESS, EVER * 3)
+giverGive(getClient(), msigRoot2.ADDRESS, EVER * 3)
+giverGive(getClient(), msigW1.ADDRESS,    EVER * 3)
+giverGive(getClient(), msigW2.ADDRESS,    EVER * 3)
+giverGive(getClient(), msigW3.ADDRESS,    EVER * 3)
 
-msigRoot.deploy()
+msigRoot1.deploy()
+msigRoot2.deploy()
 msigW1.deploy()
 msigW2.deploy()
 msigW3.deploy()
 
-root = LiquidFTRoot(tonClient=getClient(), name="token", symbol="TOK", decimals=9, ownerAddress=msigRoot.ADDRESS, signer=msigRoot.SIGNER)
-msigRoot.sendTransaction(addressDest=root.ADDRESS, value=DIME*3)
-root.deploy()
-pprint(root.getInfo())
+root1 = LiquidRoot(everClient=getClient(), name="token", symbol="TOK", decimals=9, ownerAddress=msigRoot1.ADDRESS, signer=msigRoot1.SIGNER)
+msigRoot1.sendTransaction(addressDest=root1.ADDRESS, value=DIME*3)
+root1.deploy()
+pprint(root1.getInfo())
 
-result = root.mint(msig=msigRoot, amount=100500, targetOwnerAddress=msigW1.ADDRESS)
-_unwrapMessages(result)
+result = root1.mint(msig=msigRoot1, amount=100500, targetOwnerAddress=msigW1.ADDRESS)
+_unwrapMessagesAndPrint(result=result)
 
-w1 = LiquidFTWallet(tonClient=getClient(), rootAddress=root.ADDRESS, ownerAddress=msigW1.ADDRESS)
+w1 = LiquidWallet(everClient=getClient(), rootAddress=root1.ADDRESS, ownerAddress=msigW1.ADDRESS)
 
-w1.transfer(msig=msigW1, amount=100, targetOwnerAddress=msigW2.ADDRESS)
-w2 = LiquidFTWallet(tonClient=getClient(), rootAddress=root.ADDRESS, ownerAddress=msigW2.ADDRESS)
+result = w1.transfer(msig=msigW1, amount=100, targetOwnerAddress=msigW2.ADDRESS)
+_unwrapMessagesAndPrint(result=result)
 
-print("Before setting allowance...")
-pprint(w1.getInfo(includeAllowance=True))
+w2 = LiquidWallet(everClient=getClient(), rootAddress=root1.ADDRESS, ownerAddress=msigW2.ADDRESS)
 
-result = w1.setAllowance(msig=msigW1, targetAddress=msigW3.ADDRESS, amount=100)
-print("After setting allowance...")
-pprint(w1.getInfo(includeAllowance=True))
-
-result = w1.transfer(msig=msigW3, amount=100, targetOwnerAddress=msigW2.ADDRESS)
-print("After first transfer using allowance...")
-pprint(w1.getInfo(includeAllowance=True))
-
-result = w1.transfer(msig=msigW3, amount=100, targetOwnerAddress=msigW2.ADDRESS)
-print("After second transfer using allowance...")
-pprint(w1.getInfo(includeAllowance=True))
-
-
-print("WALLET 2...")
-pprint(w2.getInfo(includeAllowance=True))

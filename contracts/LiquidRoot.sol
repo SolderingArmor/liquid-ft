@@ -5,19 +5,20 @@ pragma AbiHeader expire;
 
 //================================================================================
 //
-import "../contracts/LiquidFTRootBase.sol";
+import "../contracts/LiquidRootBase.sol";
 
 //================================================================================
 //
-contract LiquidFTRoot is LiquidFTRootBase
+contract LiquidRoot is LiquidRootBase
 {
     //========================================
     //
     constructor(address ownerAddress) public
     {
         tvm.accept();
-        _totalSupply  = 0;
-        _ownerAddress = ownerAddress;
+        _totalSupply           = 0;
+        _ownerAddress          = ownerAddress;
+        _amountForWalletDeploy = 0.1 ton;
     }
 }
 

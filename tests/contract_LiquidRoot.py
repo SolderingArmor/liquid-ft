@@ -5,18 +5,26 @@
 import freeton_utils
 from   freeton_utils import *
 
-class LiquidFTRoot(BaseContract):
+class LiquidRoot(BaseContract):
     
-    def __init__(self, tonClient: TonClient, name: str, symbol: str, decimals: int, ownerAddress: str, signer: Signer = None):
+    def __init__(self, everClient: TonClient, name: str, symbol: str, decimals: int, ownerAddress: str, signer: Signer = None):
         genSigner = generateSigner() if signer is None else signer
         self.CONSTRUCTOR = {"ownerAddress":ownerAddress}
-        self.INITDATA    = {"_walletCode": getCodeFromTvc("../bin/LiquidFTWallet.tvc"), "_name":name, "_symbol":symbol, "_decimals":decimals}
-        BaseContract.__init__(self, tonClient=tonClient, contractName="LiquidFTRoot", pubkey=genSigner.keys.public, signer=genSigner)
+        self.INITDATA    = {"_walletCode": getCodeFromTvc("../bin/LiquidWallet.tvc"), "_name": name, "_symbol": symbol, "_decimals": decimals}
+        BaseContract.__init__(self, everClient=everClient, contractName="LiquidRoot", pubkey=genSigner.keys.public, signer=genSigner)
 
     #========================================
     #
-    def changeOwner(self, msig: Multisig, ownerAddress: str):
-        result = self._callFromMultisig(msig=msig, functionName="changeOwner", functionParams={"ownerAddress":ownerAddress}, value=DIME, flags=1)
+    def setOwner(self, msig: Multisig, ownerAddress: str):
+        result = self._callFromMultisig(msig=msig, functionName="setOwner", functionParams={"ownerAddress":ownerAddress}, value=DIME, flags=1)
+        return result
+
+    def setMetadata(self, msig: Multisig, metadata: str):
+        result = self._callFromMultisig(msig=msig, functionName="setMetadata", functionParams={"metadata":metadata}, value=DIME, flags=1)
+        return result
+
+    def setPreviousRoot(self, msig: Multisig, previousRoot: str):
+        result = self._callFromMultisig(msig=msig, functionName="setPreviousRoot", functionParams={"previousRoot":previousRoot}, value=DIME, flags=1)
         return result
 
     def mint(self, msig: Multisig, amount: int, targetOwnerAddress: str, notifyAddress: str = ZERO_ADDRESS, body: str = ""):
@@ -29,12 +37,8 @@ class LiquidFTRoot(BaseContract):
 
     #========================================
     #
-    def getInfo(self, includeMetadata: bool = True):
-        result = self._run(functionName="getInfo", functionParams={"includeMetadata":includeMetadata})
-        return result
-    
-    def getWalletCode(self):
-        result = self._run(functionName="getWalletCode", functionParams={})
+    def getInfo(self, includeMetadata: bool = True, includeWalletCode: bool = False):
+        result = self._run(functionName="getInfo", functionParams={"includeMetadata":includeMetadata, "includeWalletCode":includeWalletCode, "answerId":0})
         return result
     
     def getWalletAddress(self, ownerAddress: str):
